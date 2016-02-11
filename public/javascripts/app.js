@@ -17,10 +17,10 @@ var thisApp = angular.module('Roboplant', ['ui.router', 'ngResource'])
     params: {clientExists: null}
   })
   .state('module', {
-    url: '/module',
+    url: '/module/:clientId/:moduleId',
     templateUrl: 'views/module.html',
     controller: 'ModuleController',
-    params: {clientId: null, clientExists: null}
+    params: {moduleObj: null}
   })
 
 })

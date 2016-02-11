@@ -111,5 +111,40 @@ thisApp
     }
 
 
+    $scope.viewModule = function(){
+      console.log("MODULE THIS", this.module);
+      $state.go('module', {clientId: $scope.clientId, moduleId: this.module.moduleId, moduleObj: this.module});
+    }
+
+
+  }
+])
+
+.controller('ModuleController', [
+  'HomeService',
+  '$stateParams',
+  '$state',
+  '$scope',
+  '$http',
+  function(
+    HomeService,
+    $stateParams,
+    $state,
+    $scope,
+    $http
+  ){
+
+    $scope.clientId = $stateParams.clientId;
+    $scope.moduleId = $stateParams.moduleId;
+    var moduleObj = $stateParams.moduleObj;
+
+    console.log(moduleObj);
+
+    $scope.scaleReadings = moduleObj.scaleReadings;
+    $scope.sensorReadings = moduleObj.sensorReadings;
+
+
+
+
   }
 ])

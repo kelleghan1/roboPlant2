@@ -42,6 +42,7 @@
       <div class="module-wrap" ng-repeat="module in modules">
 
         <h3>{{module.moduleId}} - {{module.moduleType}}</h3>
+        <h4 ng-click="viewModule()">View Readings</h4>
         <!-- <h4>Sensor ID: {{module.sensorId}}</h4> -->
         <!-- <h4>Scale ID: {{module.scaleId}}</h4> -->
         <h4>Most recent weight: {{module.scaleReadings[0].weight1}}</h4>
