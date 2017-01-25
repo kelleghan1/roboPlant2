@@ -1,0 +1,44 @@
+<h1 style="background-color: green; color: #fff; padding: 15px">{{title}}</h1>
+
+<!-- <form class="" action="/submit_id/:data" method="get">
+<input type="text" name="id" value="">
+<input type="submit" name="" value="Submit">
+</form> -->
+<div class="container" style="padding: 5%; width: 90%; margin: 0">
+
+  <h1>Sensor ID: {{sensorid}}</h1>
+  <h1>Temperature: {{temp1}}</h1>
+  <h1>Humidity: {{hum1}}</h1>
+  <h1>Weight: {{weight1}}</h1>
+
+  <div class="graph" style="display: flex; align-items: flex-end; width: 100%">
+
+  </div>
+
+
+</div>
+
+<script type="text/javascript">
+
+jQuery(document).ready(function($){
+
+  var myVar = setInterval(function(){ myTimer() }, 30000);
+
+  function myTimer() {
+    console.log('CHECK');
+    window.location.href = '/';
+  }
+
+  jQuery.get('/graph_data').then(function(res){
+    console.log("res", Math.floor(res[0].temp1));
+    for (var i = 0; i < res.length; i++) {
+      $('.graph').append("<div style='height:" + Math.floor(res[i].temp1)*2 + "px; width: 10px; float:left; vertical-align: baseline; background-color: green; flex:1'></div>")
+    }
+  })
+
+
+
+
+
+})
+</script>
