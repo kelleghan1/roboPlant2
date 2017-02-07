@@ -89,7 +89,7 @@ router.get("/submit_id/:data", function(req, res){
 
     if (clientRes[0] !== undefined) {
       console.log('FOUND', clientRes[0]);
-      res.render('client', { 'client': clientRes[0] });
+      res.render('client', { 'clientRes': clientRes[0] });
     } else {
       collection.insert({
         "clientId": id,
