@@ -1,0 +1,57 @@
+
+<div class="container">
+  <h1>Client {{clientRes.clientId}}</h1>
+</div>
+
+<div class="container">
+
+  {{#each clientRes.totes}}
+
+  <h1>tote</h1>
+
+  {{/each}}
+
+</div>
+
+<div class="container">
+
+  <form action="/create_tote/:data" method="get">
+    <label for="toteName">Create Tote</label>
+    <input type="text" name="toteName">
+    <input type="hidden" name="clientId" value="{{clientRes.clientId}}">
+    <input type="submit" value="Submit">
+  </form>
+
+</div>
+
+
+<div class="graph">
+
+</div>
+
+
+<!--
+<script type="text/javascript">
+
+jQuery(document).ready(function($){
+
+var myVar = setInterval(function(){ myTimer() }, 30000);
+
+function myTimer() {
+console.log('CHECK');
+window.location.href = '/';
+}
+
+jQuery.get('/graph_data').then(function(res){
+console.log("res", Math.floor(res[0].temp1));
+for (var i = 0; i < res.length; i++) {
+$('.graph').append("<div style='height:" + Math.floor(res[i].temp1)*2 + "px; width: 10px; float:left; vertical-align: baseline; background-color: green; flex:1'></div>")
+}
+})
+
+
+
+
+
+})
+</script> -->
