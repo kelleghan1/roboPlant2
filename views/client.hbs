@@ -1,26 +1,65 @@
 
 <div class="container">
-  <h1>Client {{clientRes.clientId}}</h1>
+  <div class="content-wrap">
+    <h2>Client: {{clientRes.clientId}}</h2>
+  </div>
 </div>
 
 <div class="container">
 
-  {{#each clientRes.totes}}
+  <div class="totes">
 
-  <h1>{{toteName}}</h1>
+    {{#each clientRes.totes}}
 
-  {{/each}}
+    <div class="tote-wrap">
+      <h3>{{toteName}}</h3>
+
+      <form action="/asign_sensor/:data" method="get">
+
+        <label for="sensorId">Assign Sensor</label>
+        <select type="text" name="sensorId">
+          <option value="none">None</option>
+          {{#each sensors}}
+          <option value="{{sensorId}}">Sensor {{sensorId}} </option>
+          {{/each}}
+        </select>
+        <input type="hidden" name="clientId" value="{{@root.clientRes.clientId}}">
+        <input type="hidden" name="toteName" value="{{toteName}}">
+        <input type="submit" value="Submit">
+
+      </form>
+
+      <form class="delete-tote" action="/delete_tote/:data" method="get">
+        <label for="deleteTote"></label>
+        <input type="submit" name="deleteTote" value="Delete Tote">
+      </form>
+
+      <div class="readings">
+
+
+      </div>
+
+    </div>
+
+
+    {{/each}}
+  </div>
 
 </div>
 
 <div class="container">
 
-  <form action="/create_tote/:data" method="get">
-    <label for="toteName">Create Tote</label>
-    <input type="text" name="toteName">
-    <input type="hidden" name="clientId" value="{{clientRes.clientId}}">
-    <input type="submit" value="Submit">
-  </form>
+  <div class="form-wrap">
+
+    <form action="/create_tote/:data" method="get">
+      <label for="toteName">Create Tote</label>
+      <input type="text" name="toteName">
+      <input type="hidden" name="clientId" value="{{clientRes.clientId}}">
+      <input type="submit" value="Submit">
+    </form>
+
+  </div>
+
 
 </div>
 
@@ -30,26 +69,26 @@
 </div>
 
 
-<!--
-<script type="text/javascript">
+
+<!-- <script type="text/javascript">
 
 jQuery(document).ready(function($){
 
-var myVar = setInterval(function(){ myTimer() }, 30000);
+  var myVar = setInterval(function(){ myTimer() }, 10000);
+  var clientId = {{clientRes.clientId}}
 
-function myTimer() {
-console.log('CHECK');
-window.location.href = '/';
-}
+  function myTimer() {
+    console.log('CHECK');
 
-jQuery.get('/graph_data').then(function(res){
-console.log("res", Math.floor(res[0].temp1));
-for (var i = 0; i < res.length; i++) {
-$('.graph').append("<div style='height:" + Math.floor(res[i].temp1)*2 + "px; width: 10px; float:left; vertical-align: baseline; background-color: green; flex:1'></div>")
-}
-})
+    jQuery.get('/graph_data', {"clientId": clientId}).then(function(res){
+      console.log("res", Math.floor(res[0].temp1));
+      for (var i = 0; i < res.length; i++) {
+        $('.readings').append("<div style='height:" + Math.floor(res[i].temp1)*2 + "px; width: 10px; float:left; vertical-align: baseline; background-color: green; flex:1'></div>")
+      }
+    })
 
 
+  }
 
 
 

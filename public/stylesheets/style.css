@@ -1,4 +1,5 @@
 body {
+  background-color: grey;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -25,4 +26,35 @@ section{
   width: 90%;
   margin: 0 5%;
   padding: 0 0 2.5%;
+}
+
+.totes, .form-wrap, .content-wrap{
+  padding: 15px;
+  margin: 20px 0;
+  background-color: #fff;
+}
+
+.tote-wrap{
+  padding-bottom: 20px;
+  border-bottom: 1px solid black;
+}
+
+/*.tote-wrap:nth-last-of-type(1){
+  border-bottom: none;
+}*/
+.tote-wrap:nth-of-type(1){
+  border-top: 1px solid black;
+}
+
+.header-wrap{
+  background-color: #fff;
+  padding: 15px;
+}
+
+.delete-tote{
+  margin-top: 20px;
+}
+.delete-tote > input{
+  background-color: red;
+  color: #fff;
 }

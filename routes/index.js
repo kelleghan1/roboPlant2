@@ -11,19 +11,48 @@ router.get('/', function(req, res, next) {
 });
 
 
+
+router.get("/submit_id/:data", function(req, res){
+  var db = req.db;
+  var collection = db.get('usercollection');
+  var id = req.query.clientId;
+  var sensorList = [{sensorId: 21}, {sensorId: 23}]
+
+
+
+  collection.find({'clientId': id})
+  .then(function(clientRes){
+
+    if (clientRes[0] !== undefined) {
+      res.render('client', { 'clientRes': clientRes[0] });
+    } else {
+      collection.insert({
+        "clientId": id,
+        "totes": []
+      },
+      function(e,success){
+        res.render('client', { clientRes: success, sensorList: sensorList });
+      })
+
+    }
+
+  })
+
+});
+
+
 router.get('/create_tote/:data', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
   var toteName = req.query.toteName;
-
-
+  var sensors = [{sensorId: 21}, {sensorId: 23}]
 
   collection.update(
     {clientId: clientId},
     { $push:
       { totes:
-        { toteName: toteName, sensorId: '', readings: [] }
+        { toteName: toteName, sensorId: '', readings: [], sensors: sensors }
       }
     }
   )
@@ -31,8 +60,46 @@ router.get('/create_tote/:data', function(req, res, next) {
     res.redirect('back');
   })
 
+});
+
+
+router.get('/asign_sensor/:data', function(req, res, next) {
+  var db = req.db;
+  var collection = db.get('usercollection');
+  var clientId = req.query.clientId;
+  var toteName = req.query.toteName;
+  var sensorId = parseInt(req.query.sensorId);
+
+  collection.update(
+    { clientId: clientId, "totes.toteName": toteName },
+    { $set: {"totes.$.sensorId": sensorId} }
+  )
+  .then(function(result){
+    res.redirect('back');
+  })
 
 });
+
+
+router.post("/post_data/:data", function(req, res){
+  var db = req.db;
+  var collection = db.get('usercollection');
+  var sensorRequest = req.params.data;
+  var obj = JSON.parse(sensorRequest);
+  // obj.datetime = Date.now;
+
+  collection.update(
+    {"totes.sensorId": obj.sensorid},
+    { $push:
+      { "totes.$.readings": obj }
+    }
+  )
+
+  return;
+
+});
+
+
 
 router.get('/test_route', function(req, res, next) {
   var db = req.db;
@@ -63,47 +130,9 @@ router.get('/test_route', function(req, res, next) {
 //
 // });
 
-// router.post("/post_data/:data", function(req, res){
-//   var db = req.db;
-//   var collection = db.get('usercollection');
-//   var sensorRequest = req.params.data;
-//   var obj = JSON.parse(sensorRequest);
-//   // obj.datetime = Date.now;
-//   console.log("######################", obj[0]);
-//
-//   collection.insert(JSON.parse(sensorRequest), function(e,success){
-//     console.log('SUCCESS*******', success);
-//     // console.log('ERROR*********', e);
-//   });
-//   return;
-// });
 
 
-router.get("/submit_id/:data", function(req, res){
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var id = req.query.clientId;
 
-  collection.find({'clientId': id})
-  .then(function(clientRes){
 
-    if (clientRes[0] !== undefined) {
-      console.log('FOUND', clientRes[0]);
-      res.render('client', { 'clientRes': clientRes[0] });
-    } else {
-      collection.insert({
-        "clientId": id,
-        "totes": []
-      },
-      function(e,success){
-        console.log('NOTFOUND', success);
-        res.render('client', { 'clientRes': success });
-      })
-
-    }
-
-  })
-
-});
 
 module.exports = router;
