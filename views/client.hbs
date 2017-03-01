@@ -7,42 +7,10 @@
 
 <div class="container">
 
-  <div class="totes">
-
-    {{#each clientRes.totes}}
-
-    <div class="tote-wrap">
-      <h3>{{toteName}}</h3>
-
-      <form action="/asign_sensor/:data" method="get">
-
-        <label for="sensorId">Assign Sensor</label>
-        <select type="text" name="sensorId">
-          <option value="none">None</option>
-          {{#each sensors}}
-          <option value="{{sensorId}}">Sensor {{sensorId}} </option>
-          {{/each}}
-        </select>
-        <input type="hidden" name="clientId" value="{{@root.clientRes.clientId}}">
-        <input type="hidden" name="toteName" value="{{toteName}}">
-        <input type="submit" value="Submit">
-
-      </form>
-
-      <form class="delete-tote" action="/delete_tote/:data" method="get">
-        <label for="deleteTote"></label>
-        <input type="submit" name="deleteTote" value="Delete Tote">
-      </form>
-
-      <div class="readings">
+  <div id="totes">
 
 
-      </div>
 
-    </div>
-
-
-    {{/each}}
   </div>
 
 </div>
@@ -70,21 +38,61 @@
 
 
 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
 
 jQuery(document).ready(function($){
 
-  var myVar = setInterval(function(){ myTimer() }, 10000);
-  var clientId = {{clientRes.clientId}}
+  var clientIdString = window.location.search;
+  var clientIdArr = clientIdString.split('=');
+  var clientId1 = clientIdArr[clientIdArr.length-1];
+  var clientId = clientId1.replace("+", " ");
+  var sensors = [21, 22, 23];
+
+  console.log(clientId);
+
+  jQuery.get('/get_data', {"clientId": clientId})
+  .then(function(res){
+
+    console.log('RESULT', res);
+
+    for (var i = 0; i < res.totes.length; i++) {
+      $('#totes').append("<div class='tote-wrap'><h3>" + res.totes[i].toteName + "</h3><form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" + res.clientId + "'><input type='hidden' name='toteName' value='" + res.totes[i].toteName + "'><input type='submit' value='Submit'></form><div class='readings'>" + "</div></div>")
+    }
+
+    for (var i = 0; i < sensors.length; i++) {
+      $('.sensorSelect').append("<option value=" + sensors[i] + ">" + sensors[i] + "</option>")
+    }
+
+
+
+
+  })
+
+
+
+  var myVar = setInterval(function(){ myTimer() }, 30000);
 
   function myTimer() {
     console.log('CHECK');
 
-    jQuery.get('/graph_data', {"clientId": clientId}).then(function(res){
-      console.log("res", Math.floor(res[0].temp1));
-      for (var i = 0; i < res.length; i++) {
-        $('.readings').append("<div style='height:" + Math.floor(res[i].temp1)*2 + "px; width: 10px; float:left; vertical-align: baseline; background-color: green; flex:1'></div>")
+    $('#totes').html('');
+
+    jQuery.get('/get_data', {"clientId": clientId})
+    .then(function(res){
+
+      console.log('RESULT', res);
+
+      for (var i = 0; i < res.totes.length; i++) {
+        $('#totes').append("<div class='tote-wrap'><h3>" + res.totes[i].toteName + "</h3><form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" + res.clientId + "'><input type='hidden' name='toteName' value='" + res.totes[i].toteName + "'><input type='submit' value='Submit'></form><div class='readings'>HUM " + res.totes[i].readings[res.totes[i].readings.length - 1].hum1 + " - TEMP " + res.totes[i].readings[res.totes[i].readings.length - 1].temp1 + "</div></div>")
       }
+
+      for (var i = 0; i < sensors.length; i++) {
+        $('.sensorSelect').append("<option value=" + sensors[i] + ">" + sensors[i] + "</option>")
+      }
+
+
+
+
     })
 
 
@@ -93,4 +101,4 @@ jQuery(document).ready(function($){
 
 
 })
-</script> -->
+</script>

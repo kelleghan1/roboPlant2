@@ -16,9 +16,6 @@ router.get("/submit_id/:data", function(req, res){
   var db = req.db;
   var collection = db.get('usercollection');
   var id = req.query.clientId;
-  var sensorList = [{sensorId: 21}, {sensorId: 23}]
-
-
 
   collection.find({'clientId': id})
   .then(function(clientRes){
@@ -31,10 +28,28 @@ router.get("/submit_id/:data", function(req, res){
         "totes": []
       },
       function(e,success){
-        res.render('client', { clientRes: success, sensorList: sensorList });
+        console.log('SUCCESS INSERT', success);
+        res.render('client', { clientRes: success });
       })
 
     }
+
+  })
+
+});
+
+
+
+router.get('/get_data', function(req, res, next) {
+  var db = req.db;
+  var collection = db.get('usercollection');
+
+  var clientId = req.query.clientId;
+
+  collection.find({'clientId': clientId})
+  .then(function(clientRes){
+
+    res.send(clientRes[0])
 
   })
 
@@ -46,13 +61,14 @@ router.get('/create_tote/:data', function(req, res, next) {
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
   var toteName = req.query.toteName;
-  var sensors = [{sensorId: 21}, {sensorId: 23}]
+
+
 
   collection.update(
     {clientId: clientId},
     { $push:
       { totes:
-        { toteName: toteName, sensorId: '', readings: [], sensors: sensors }
+        { toteName: toteName, sensorId: '', readings: [] }
       }
     }
   )
@@ -111,24 +127,20 @@ router.get('/test_route', function(req, res, next) {
 
 });
 
-// router.get('/graph_data', function(req, res, next) {
-//   var db = req.db;
-//   var collection = db.get('usercollection');
-//
-//   collection.find({sensorid: 21}, {}, function(e,results){
-//
-//     var recent = [];
-//     for (var i = results.length-1; i > 0; i--) {
-//       recent.push({'temp': results[i].temp1});
-//     };
-//
-//     return recent;
-//
-//   }).then(function(temps){
-//     res.send(temps);
-//   });
-//
-// });
+router.get('/graph_data', function(req, res, next) {
+  var db = req.db;
+  var collection = db.get('usercollection');
+  var clientId = req.query.clientId;
+
+
+  collection.find({'clientId': clientId})
+  .then(function(clientRes){
+
+    res.send(clientRes[0])
+
+  })
+
+});
 
 
 

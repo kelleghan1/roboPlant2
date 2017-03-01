@@ -28,7 +28,7 @@ section{
   padding: 0 0 2.5%;
 }
 
-.totes, .form-wrap, .content-wrap{
+#totes, .form-wrap, .content-wrap{
   padding: 15px;
   margin: 20px 0;
   background-color: #fff;
