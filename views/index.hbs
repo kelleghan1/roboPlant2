@@ -1,26 +1,31 @@
-<div class="container">
 
-  <div class="content-wrap">
+<section>
 
+  <div class="container">
 
-    <h3>Enter Client ID</h3>
-    <p>Enter existing ID to view account or enter new ID to create a new account.</p>
+    <div class="content-wrap">
 
-    <form class="" action="/submit_id/:data" method="get">
-      <input type="text" name="clientId">
-      <input type="submit" value="Submit">
-    </form>
+      <h3>Enter Client ID</h3>
+      <p>Enter existing ID to view account or enter new ID to create a new account.</p>
 
+      <form class="" action="/submit_id/:data" method="get">
+        <input type="text" name="clientId">
+        <input type="submit" value="Submit">
+      </form>
+
+    </div>
 
   </div>
+</section>
 
-</div>
 
 <script type="text/javascript" >
 
-// jQuery(document).ready(function($){
-//   console.log("working");
-//   console.log($('header'));
-// })
+jQuery.get('/get_clients')
+.then(function(res){
+
+  console.log('client', res);
+
+});
 
 </script>

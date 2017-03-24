@@ -1,35 +1,44 @@
 
-<div class="container">
-  <div class="content-wrap">
-    <h2>Client: {{clientRes.clientId}}</h2>
+<section>
+  <div class="container">
+    <div class="content-wrap">
+      <h2>Client: {{clientRes.clientId}}</h2>
+    </div>
   </div>
-</div>
-
-<div class="container">
-
-  <div id="totes">
+</section>
 
 
+<section>
+  <div class="container">
 
-  </div>
+    <div class="form-wrap">
 
-</div>
+      <form action="/create_tote/:data" method="get">
+        <p>{{warning}}</p>
+        <label for="toteName">Create Tote</label>
+        <input type="text" name="toteName">
+        <input type="hidden" name="clientId" value="{{clientRes.clientId}}">
+        <input type="submit" value="Submit">
+      </form>
 
-<div class="container">
-
-  <div class="form-wrap">
-
-    <form action="/create_tote/:data" method="get">
-      <label for="toteName">Create Tote</label>
-      <input type="text" name="toteName">
-      <input type="hidden" name="clientId" value="{{clientRes.clientId}}">
-      <input type="submit" value="Submit">
-    </form>
+    </div>
 
   </div>
+</section>
+
+<section>
+  <div class="container">
+
+    <div id="totes">
 
 
-</div>
+
+    </div>
+
+  </div>
+</section>
+
+
 
 
 <div class="graph">
@@ -46,59 +55,168 @@ jQuery(document).ready(function($){
   var clientIdArr = clientIdString.split('=');
   var clientId1 = clientIdArr[clientIdArr.length-1];
   var clientId = clientId1.replace("+", " ");
-  var sensors = [21, 22, 23];
-
-  console.log(clientId);
+  var sensors = [21, 23];
+  var scales = [22];
 
   jQuery.get('/get_data', {"clientId": clientId})
   .then(function(res){
 
-    console.log('RESULT', res);
-
     for (var i = 0; i < res.totes.length; i++) {
-      $('#totes').append("<div class='tote-wrap'><h3>" + res.totes[i].toteName + "</h3><form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" + res.clientId + "'><input type='hidden' name='toteName' value='" + res.totes[i].toteName + "'><input type='submit' value='Submit'></form><div class='readings'>" + "</div></div>")
+
+      $('#totes').append(
+        "<div class='tote-wrap' id='" +
+        res.totes[i].toteName.replace(' ', '') + "'><h3>" +
+        res.totes[i].toteName +
+        "</h3>\
+        <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+        res.clientId +
+        "'><input type='hidden' name='toteName' value='" +
+        res.totes[i].toteName +
+        "'><input type='submit' value='Submit'></form>\
+        <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+        res.clientId +
+        "'><input type='hidden' name='toteName' value='" +
+        res.totes[i].toteName +
+        "'><input type='submit' value='Submit'></form>\
+        <div class='readings'><br> - HUM " +
+
+        (function(){
+          if (res.totes[i].sensorReadings.length !== 0 ) {
+            return res.totes[i].sensorReadings[res.totes[i].sensorReadings.length - 1].hum1;
+          }else{
+            return '';
+          }
+        })() +
+
+        "<br> - TEMP " +
+
+        (function(){
+          if (res.totes[i].sensorReadings.length !== 0 ) {
+            return res.totes[i].sensorReadings[res.totes[i].sensorReadings.length - 1].temp1;
+          }else{
+            return '';
+          }
+        })() +
+
+        "<br> - WEIGHT " +
+
+        (function(){
+          if (res.totes[i].scaleReadings.length !== 0 ) {
+            return res.totes[i].scaleReadings[res.totes[i].scaleReadings.length - 1].weight1;
+          }else{
+            return '';
+          }
+        })() +
+
+        "<br> - LENGTH " +
+
+        (function(){
+          if (res.totes[i].sensorReadings.length !== 0 ) {
+            return res.totes[i].sensorReadings.length;
+          }else{
+            return '';
+          }
+        })() +
+
+        "</div></div>"
+      )
+
+      for (var ii = 0; ii < sensors.length; ii++) {
+        $('#' + res.totes[i].toteName.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.totes[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
+      }
+      for (var ii = 0; ii < scales.length; ii++) {
+        $('#' + res.totes[i].toteName.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.totes[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
+      }
+
     }
-
-    for (var i = 0; i < sensors.length; i++) {
-      $('.sensorSelect').append("<option value=" + sensors[i] + ">" + sensors[i] + "</option>")
-    }
-
-
-
 
   })
 
 
-
-  var myVar = setInterval(function(){ myTimer() }, 30000);
+  var myVar = setInterval(function(){ myTimer() }, 10000);
 
   function myTimer() {
-    console.log('CHECK');
 
-    $('#totes').html('');
 
     jQuery.get('/get_data', {"clientId": clientId})
     .then(function(res){
 
-      console.log('RESULT', res);
+      console.log(res);
+      $('#totes').html('');
+
 
       for (var i = 0; i < res.totes.length; i++) {
-        $('#totes').append("<div class='tote-wrap'><h3>" + res.totes[i].toteName + "</h3><form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" + res.clientId + "'><input type='hidden' name='toteName' value='" + res.totes[i].toteName + "'><input type='submit' value='Submit'></form><div class='readings'>HUM " + res.totes[i].readings[res.totes[i].readings.length - 1].hum1 + " - TEMP " + res.totes[i].readings[res.totes[i].readings.length - 1].temp1 + "</div></div>")
+
+        $('#totes').append(
+          "<div class='tote-wrap' id='" +
+          res.totes[i].toteName.replace(' ', '') + "'><h3>" +
+          res.totes[i].toteName +
+          "</h3>\
+          <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+          res.clientId +
+          "'><input type='hidden' name='toteName' value='" +
+          res.totes[i].toteName +
+          "'><input type='submit' value='Submit'></form>\
+          <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+          res.clientId +
+          "'><input type='hidden' name='toteName' value='" +
+          res.totes[i].toteName +
+          "'><input type='submit' value='Submit'></form>\
+          <div class='readings'><br> - HUM " +
+
+          (function(){
+            if (res.totes[i].sensorReadings.length !== 0 ) {
+              return res.totes[i].sensorReadings[res.totes[i].sensorReadings.length - 1].hum1;
+            }else{
+              return '';
+            }
+          })() +
+
+          "<br> - TEMP " +
+
+          (function(){
+            if (res.totes[i].sensorReadings.length !== 0 ) {
+              return res.totes[i].sensorReadings[res.totes[i].sensorReadings.length - 1].temp1;
+            }else{
+              return '';
+            }
+          })() +
+
+          "<br> - WEIGHT " +
+
+          (function(){
+            if (res.totes[i].scaleReadings.length !== 0 ) {
+              return res.totes[i].scaleReadings[res.totes[i].scaleReadings.length - 1].weight1;
+            }else{
+              return '';
+            }
+          })() +
+
+          "<br> - LENGTH " +
+
+          (function(){
+            if (res.totes[i].sensorReadings.length !== 0 ) {
+              return res.totes[i].sensorReadings.length;
+            }else{
+              return '';
+            }
+          })() +
+
+          "</div></div>"
+        )
+
+        for (var ii = 0; ii < sensors.length; ii++) {
+          $('#' + res.totes[i].toteName.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.totes[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
+        }
+        for (var ii = 0; ii < scales.length; ii++) {
+          $('#' + res.totes[i].toteName.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.totes[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
+        }
+
       }
-
-      for (var i = 0; i < sensors.length; i++) {
-        $('.sensorSelect').append("<option value=" + sensors[i] + ">" + sensors[i] + "</option>")
-      }
-
-
-
 
     })
 
-
   }
-
-
 
 })
 </script>
