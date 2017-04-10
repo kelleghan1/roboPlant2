@@ -25,7 +25,7 @@ router.get("/submit_id/:data", function(req, res){
     } else {
       collection.insert({
         "clientId": id,
-        "totes": []
+        "modules": []
       },
       function(e,success){
         console.log('SUCCESS INSERT', success);
@@ -69,19 +69,19 @@ router.get('/get_clients', function(req, res, next) {
 });
 
 
-router.get('/create_tote/:data', function(req, res, next) {
+router.get('/create_module/:data', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
-  var toteName = req.query.toteName;
+  var moduleName = req.query.moduleName;
 
-  if (toteName !== '') {
+  if (moduleName !== '') {
 
     collection.update(
       {clientId: clientId},
       { $push:
-        { totes:
-          { toteName: toteName, sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
+        { modules:
+          { moduleName: moduleName, moduleType: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
         }
       }
     )
@@ -99,18 +99,18 @@ router.get('/asign_sensor/:data', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
-  var toteName = req.query.toteName;
+  var moduleName = req.query.moduleName;
   var sensorId = parseInt(req.query.sensorId);
 
 
   collection.update(
-    { "totes.sensorId": sensorId },
-    { $set: {"totes.$.sensorId": ''} }
+    { "modules.sensorId": sensorId },
+    { $set: {"modules.$.sensorId": ''} }
   )
 
   collection.update(
-    { clientId: clientId, "totes.toteName": toteName },
-    { $set: {"totes.$.sensorId": sensorId} }
+    { clientId: clientId, "modules.moduleName": moduleName },
+    { $set: {"modules.$.sensorId": sensorId} }
   )
   .then(function(result){
     res.redirect('back');
@@ -122,18 +122,36 @@ router.get('/asign_scale/:data', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
-  var toteName = req.query.toteName;
+  var moduleName = req.query.moduleName;
   var scaleId = parseInt(req.query.scaleId);
 
 
   collection.update(
-    { "totes.scaleId": scaleId },
-    { $set: {"totes.$.scaleId": ''} }
+    { "modules.scaleId": scaleId },
+    { $set: {"modules.$.scaleId": ''} }
   )
 
   collection.update(
-    { clientId: clientId, "totes.toteName": toteName },
-    { $set: {"totes.$.scaleId": scaleId} }
+    { clientId: clientId, "modules.moduleName": moduleName },
+    { $set: {"modules.$.scaleId": scaleId} }
+  )
+  .then(function(result){
+    res.redirect('back');
+  })
+
+});
+
+router.get('/asign_type/:data', function(req, res, next) {
+  var db = req.db;
+  var collection = db.get('usercollection');
+  var clientId = req.query.clientId;
+  var moduleName = req.query.moduleName;
+  var moduleType = req.query.moduleType;
+
+
+  collection.update(
+    { clientId: clientId, "modules.moduleName": moduleName },
+    { $set: {"modules.$.moduleType": moduleType} }
   )
   .then(function(result){
     res.redirect('back');
@@ -153,18 +171,18 @@ router.post("/post_data/:data", function(req, res){
   if (obj.sensorid == 22) {
 
     collection.update(
-      {"totes.scaleId": obj.sensorid},
+      {"modules.scaleId": obj.sensorid},
       { $push:
-        { "totes.$.scaleReadings": obj }
+        { "modules.$.scaleReadings": obj }
       }
     )
 
   } else {
 
     collection.update(
-      {"totes.sensorId": obj.sensorid},
+      {"modules.sensorId": obj.sensorid},
       { $push:
-        { "totes.$.sensorReadings": obj }
+        { "modules.$.sensorReadings": obj }
       }
     )
 

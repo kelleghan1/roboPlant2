@@ -40,21 +40,21 @@ section{
   max-width: 960px;
 }
 
-#totes, .form-wrap, .content-wrap{
+#modules, .form-wrap, .content-wrap{
   padding: 15px;
   margin: 20px 0;
   background-color: #fff;
 }
 
-.tote-wrap{
+.module-wrap{
   padding-bottom: 20px;
   border-bottom: 1px solid black;
 }
 
-/*.tote-wrap:nth-last-of-type(1){
+/*.module-wrap:nth-last-of-type(1){
   border-bottom: none;
 }*/
-.tote-wrap:nth-of-type(1){
+.module-wrap:nth-of-type(1){
   border-top: 1px solid black;
 }
 
