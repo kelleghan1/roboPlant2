@@ -13,10 +13,18 @@
 
     <div class="form-wrap">
 
+      <h2>Create Module</h2>
+      <p>A module is a subject that will have readings alocated to it. Select a name and a type.</p>
       <form action="/create_module/:data" method="get">
-        <label for="moduleName">Create Module</label>
-        <input type="text" name="moduleName">
         <input type="hidden" name="clientId" value="{{clientRes.clientId}}">
+        <label>Module Name</label>
+        <input type="text" name="moduleName" required>
+        <br>
+        <label>Module Type</label>
+        <select id="module-generate-type" class="" name="moduleType" required>
+          <option value="">Select</option>
+        </select>
+        <br>
         <input type="submit" value="Submit">
       </form>
 
@@ -56,6 +64,12 @@ jQuery(document).ready(function($){
   var clientId = clientId1.replace("+", " ");
   var sensors = [21, 23];
   var scales = [22];
+  var types = ['Environmental', 'Tote', 'Trimmer', 'Plant'];
+
+  for (var i = 0; i < types.length; i++) {
+    $('#module-generate-type').append("<option value='" + types[i] + "'>" + types[i] + "</option>");
+  }
+  $('#module-generate-type').append("<option value='other'>Other</option>");
 
   jQuery.get('/get_data', {"clientId": clientId})
   .then(function(res){
@@ -65,14 +79,26 @@ jQuery(document).ready(function($){
       $('#modules').append(
         "<div class='module-wrap' id='" +
         res.modules[i].moduleName.replace(' ', '') + "'><h3>" +
-        res.modules[i].moduleName +
+        res.modules[i].moduleName + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
         "</h3>\
+        <a href='/modules/" +
+        res.clientId +
+        "/" +
+        res.modules[i].moduleName +
+        "'>Readings</a>\
         <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
         res.clientId +
         "'><input type='hidden' name='moduleName' value='" +
         res.modules[i].moduleName +
         "'><input type='submit' value='Submit'></form>\
         <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+        res.clientId +
+        "'><input type='hidden' name='moduleName' value='" +
+        res.modules[i].moduleName +
+        "'><input type='submit' value='Submit'></form>\
+        <form action='/asign_notes/:data' method='get'><label for='notes'>Notes</label><textarea type='textarea' name='moduleNotes' rows='5'>" +
+        res.modules[i].moduleNotes +
+        "</textarea><input type='hidden' name='clientId' value='" +
         res.clientId +
         "'><input type='hidden' name='moduleName' value='" +
         res.modules[i].moduleName +
@@ -132,7 +158,7 @@ jQuery(document).ready(function($){
   })
 
 
-  var myVar = setInterval(function(){ myTimer() }, 10000);
+  var myVar = setInterval(function(){ myTimer() }, 30000);
 
   function myTimer() {
 
@@ -140,7 +166,6 @@ jQuery(document).ready(function($){
     jQuery.get('/get_data', {"clientId": clientId})
     .then(function(res){
 
-      console.log(res);
       $('#modules').html('');
 
 
@@ -149,7 +174,7 @@ jQuery(document).ready(function($){
         $('#modules').append(
           "<div class='module-wrap' id='" +
           res.modules[i].moduleName.replace(' ', '') + "'><h3>" +
-          res.modules[i].moduleName +
+          res.modules[i].moduleName + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
           "</h3>\
           <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
           res.clientId +
@@ -157,6 +182,13 @@ jQuery(document).ready(function($){
           res.modules[i].moduleName +
           "'><input type='submit' value='Submit'></form>\
           <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+          res.clientId +
+          "'><input type='hidden' name='moduleName' value='" +
+          res.modules[i].moduleName +
+          "'><input type='submit' value='Submit'></form>\
+          <form action='/asign_notes/:data' method='get'><label for='notes'>Notes</label><textarea type='textarea' name='moduleNotes' rows='5'>" +
+          res.modules[i].moduleNotes +
+          "</textarea><input type='hidden' name='clientId' value='" +
           res.clientId +
           "'><input type='hidden' name='moduleName' value='" +
           res.modules[i].moduleName +

@@ -39,6 +39,21 @@ router.get("/submit_id/:data", function(req, res){
 });
 
 
+router.get("/modules/:client/:module1", function(req, res){
+  var db = req.db;
+  var collection = db.get('usercollection');
+  var id = req.params.client;
+  var module1 = req.params.module1;
+
+  collection.find({'clientId': id})
+  .then(function(clientRes){
+
+    res.render('module', { 'clientRes': clientRes[0] });
+
+  })
+
+});
+
 
 router.get('/get_data', function(req, res, next) {
   var db = req.db;
@@ -74,6 +89,7 @@ router.get('/create_module/:data', function(req, res, next) {
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
   var moduleName = req.query.moduleName;
+  var moduleType = req.query.moduleType;
 
   if (moduleName !== '') {
 
@@ -81,7 +97,7 @@ router.get('/create_module/:data', function(req, res, next) {
       {clientId: clientId},
       { $push:
         { modules:
-          { moduleName: moduleName, moduleType: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
+          { moduleName: moduleName, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
         }
       }
     )
@@ -141,17 +157,17 @@ router.get('/asign_scale/:data', function(req, res, next) {
 
 });
 
-router.get('/asign_type/:data', function(req, res, next) {
+
+router.get('/asign_notes/:data', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
   var moduleName = req.query.moduleName;
-  var moduleType = req.query.moduleType;
-
+  var moduleNotes = req.query.moduleNotes;
 
   collection.update(
     { clientId: clientId, "modules.moduleName": moduleName },
-    { $set: {"modules.$.moduleType": moduleType} }
+    { $set: {"modules.$.moduleNotes": moduleNotes} }
   )
   .then(function(result){
     res.redirect('back');
