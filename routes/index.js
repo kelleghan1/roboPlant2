@@ -1,3 +1,5 @@
+
+
 var express = require('express');
 var router = express.Router();
 
@@ -17,6 +19,8 @@ router.get("/submit_id/:data", function(req, res){
   var collection = db.get('usercollection');
   var id = req.query.clientId;
 
+  console.log('**************', id);
+
   collection.find({'clientId': id})
   .then(function(clientRes){
 
@@ -28,7 +32,6 @@ router.get("/submit_id/:data", function(req, res){
         "modules": []
       },
       function(e,success){
-        console.log('SUCCESS INSERT', success);
         res.render('client', { clientRes: success });
       })
 
@@ -77,7 +80,6 @@ router.get('/get_clients', function(req, res, next) {
 
   collection.find()
   .then(function(clientRes){
-    console.log(clientRes);
     res.send(clientRes);
   });
 
@@ -181,8 +183,6 @@ router.post("/post_data/:data", function(req, res){
   var collection = db.get('usercollection');
   var sensorRequest = req.params.data;
   var obj = JSON.parse(sensorRequest);
-
-  console.log('WEIGHT', obj);
 
   if (obj.sensorid == 22) {
 

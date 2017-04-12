@@ -15,6 +15,26 @@ body{
   margin: 0
 }
 
+table{
+  width: 100%;
+}
+
+th{
+  text-align: left;
+  background-color: #ccc;
+  width: 25%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+td{
+  text-align: left;
+  width: 25%;
+  padding: 5px;
+  box-sizing: border-box;
+
+}
+
 textarea{
   width: 100%;
   max-width: 100%;
