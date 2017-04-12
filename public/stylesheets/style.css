@@ -27,6 +27,12 @@ header{
   width: 100%;
 }
 
+.header-wrap{
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
 #logo-wrap{
   width: 150px;
 }
@@ -48,7 +54,7 @@ section{
 
 #modules, .form-wrap, .content-wrap{
   padding: 15px;
-  margin: 20px 0;
+  margin: 10px 0;
   background-color: #fff;
 }
 
@@ -65,10 +71,7 @@ section{
 
 }
 
-.header-wrap{
-  background-color: #fff;
-  padding: 15px;
-}
+
 
 .delete-tote{
   margin-top: 20px;

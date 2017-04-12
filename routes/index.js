@@ -39,16 +39,16 @@ router.get("/submit_id/:data", function(req, res){
 });
 
 
-router.get("/modules/:client/:module1", function(req, res){
+router.get("/moduleId/:clientId/:moduleId", function(req, res){
   var db = req.db;
   var collection = db.get('usercollection');
-  var id = req.params.client;
-  var module1 = req.params.module1;
+  var id = req.params.clientId;
+  var moduleId = req.params.moduleId;
 
   collection.find({'clientId': id})
   .then(function(clientRes){
 
-    res.render('module', { 'clientRes': clientRes[0] });
+    res.render('module', { 'clientRes': clientRes[0], 'moduleId': moduleId });
 
   })
 
@@ -88,16 +88,16 @@ router.get('/create_module/:data', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
-  var moduleName = req.query.moduleName;
+  var moduleId = req.query.moduleId;
   var moduleType = req.query.moduleType;
 
-  if (moduleName !== '') {
+  if (moduleId !== '') {
 
     collection.update(
       {clientId: clientId},
       { $push:
         { modules:
-          { moduleName: moduleName, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
+          { moduleId: moduleId, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
         }
       }
     )
@@ -115,7 +115,7 @@ router.get('/asign_sensor/:data', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
-  var moduleName = req.query.moduleName;
+  var moduleId = req.query.moduleId;
   var sensorId = parseInt(req.query.sensorId);
 
 
@@ -125,7 +125,7 @@ router.get('/asign_sensor/:data', function(req, res, next) {
   )
 
   collection.update(
-    { clientId: clientId, "modules.moduleName": moduleName },
+    { clientId: clientId, "modules.moduleId": moduleId },
     { $set: {"modules.$.sensorId": sensorId} }
   )
   .then(function(result){
@@ -138,7 +138,7 @@ router.get('/asign_scale/:data', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
-  var moduleName = req.query.moduleName;
+  var moduleId = req.query.moduleId;
   var scaleId = parseInt(req.query.scaleId);
 
 
@@ -148,7 +148,7 @@ router.get('/asign_scale/:data', function(req, res, next) {
   )
 
   collection.update(
-    { clientId: clientId, "modules.moduleName": moduleName },
+    { clientId: clientId, "modules.moduleId": moduleId },
     { $set: {"modules.$.scaleId": scaleId} }
   )
   .then(function(result){
@@ -162,11 +162,11 @@ router.get('/asign_notes/:data', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
   var clientId = req.query.clientId;
-  var moduleName = req.query.moduleName;
+  var moduleId = req.query.moduleId;
   var moduleNotes = req.query.moduleNotes;
 
   collection.update(
-    { clientId: clientId, "modules.moduleName": moduleName },
+    { clientId: clientId, "modules.moduleId": moduleId },
     { $set: {"modules.$.moduleNotes": moduleNotes} }
   )
   .then(function(result){

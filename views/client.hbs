@@ -14,11 +14,11 @@
     <div class="form-wrap">
 
       <h2>Create Module</h2>
-      <p>A module is a subject that will have readings alocated to it. Select a name and a type.</p>
+      <p>A module is a subject that will have readings allocated to it. Select a name and a type.</p>
       <form action="/create_module/:data" method="get">
         <input type="hidden" name="clientId" value="{{clientRes.clientId}}">
-        <label>Module Name</label>
-        <input type="text" name="moduleName" required>
+        <label>Module ID</label>
+        <input type="text" name="moduleId" required>
         <br>
         <label>Module Type</label>
         <select id="module-generate-type" class="" name="moduleType" required>
@@ -69,6 +69,7 @@ jQuery(document).ready(function($){
   for (var i = 0; i < types.length; i++) {
     $('#module-generate-type').append("<option value='" + types[i] + "'>" + types[i] + "</option>");
   }
+
   $('#module-generate-type').append("<option value='other'>Other</option>");
 
   jQuery.get('/get_data', {"clientId": clientId})
@@ -78,30 +79,30 @@ jQuery(document).ready(function($){
 
       $('#modules').append(
         "<div class='module-wrap' id='" +
-        res.modules[i].moduleName.replace(' ', '') + "'><h3>" +
-        res.modules[i].moduleName + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
+        res.modules[i].moduleId.replace(' ', '') + "'><h3>" +
+        res.modules[i].moduleId + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
         "</h3>\
-        <a href='/modules/" +
+        <a href='/moduleId/" +
         res.clientId +
         "/" +
-        res.modules[i].moduleName +
+        res.modules[i].moduleId +
         "'>Readings</a>\
         <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
         res.clientId +
-        "'><input type='hidden' name='moduleName' value='" +
-        res.modules[i].moduleName +
+        "'><input type='hidden' name='moduleId' value='" +
+        res.modules[i].moduleId +
         "'><input type='submit' value='Submit'></form>\
         <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
         res.clientId +
-        "'><input type='hidden' name='moduleName' value='" +
-        res.modules[i].moduleName +
+        "'><input type='hidden' name='moduleId' value='" +
+        res.modules[i].moduleId +
         "'><input type='submit' value='Submit'></form>\
         <form action='/asign_notes/:data' method='get'><label for='notes'>Notes</label><textarea type='textarea' name='moduleNotes' rows='5'>" +
         res.modules[i].moduleNotes +
         "</textarea><input type='hidden' name='clientId' value='" +
         res.clientId +
-        "'><input type='hidden' name='moduleName' value='" +
-        res.modules[i].moduleName +
+        "'><input type='hidden' name='moduleId' value='" +
+        res.modules[i].moduleId +
         "'><input type='submit' value='Submit'></form>\
         <div class='readings'><br> - HUM " +
 
@@ -147,10 +148,10 @@ jQuery(document).ready(function($){
       )
 
       for (var ii = 0; ii < sensors.length; ii++) {
-        $('#' + res.modules[i].moduleName.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.modules[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
+        $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.modules[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
       }
       for (var ii = 0; ii < scales.length; ii++) {
-        $('#' + res.modules[i].moduleName.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.modules[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
+        $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.modules[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
       }
 
     }
@@ -173,25 +174,30 @@ jQuery(document).ready(function($){
 
         $('#modules').append(
           "<div class='module-wrap' id='" +
-          res.modules[i].moduleName.replace(' ', '') + "'><h3>" +
-          res.modules[i].moduleName + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
+          res.modules[i].moduleId.replace(' ', '') + "'><h3>" +
+          res.modules[i].moduleId + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
           "</h3>\
+          <a href='/moduleId/" +
+          res.clientId +
+          "/" +
+          res.modules[i].moduleId +
+          "'>Readings</a>\
           <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
           res.clientId +
-          "'><input type='hidden' name='moduleName' value='" +
-          res.modules[i].moduleName +
+          "'><input type='hidden' name='moduleId' value='" +
+          res.modules[i].moduleId +
           "'><input type='submit' value='Submit'></form>\
           <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
           res.clientId +
-          "'><input type='hidden' name='moduleName' value='" +
-          res.modules[i].moduleName +
+          "'><input type='hidden' name='moduleId' value='" +
+          res.modules[i].moduleId +
           "'><input type='submit' value='Submit'></form>\
           <form action='/asign_notes/:data' method='get'><label for='notes'>Notes</label><textarea type='textarea' name='moduleNotes' rows='5'>" +
           res.modules[i].moduleNotes +
           "</textarea><input type='hidden' name='clientId' value='" +
           res.clientId +
-          "'><input type='hidden' name='moduleName' value='" +
-          res.modules[i].moduleName +
+          "'><input type='hidden' name='moduleId' value='" +
+          res.modules[i].moduleId +
           "'><input type='submit' value='Submit'></form>\
           <div class='readings'><br> - HUM " +
 
@@ -237,10 +243,10 @@ jQuery(document).ready(function($){
         )
 
         for (var ii = 0; ii < sensors.length; ii++) {
-          $('#' + res.modules[i].moduleName.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.modules[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
+          $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.modules[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
         }
         for (var ii = 0; ii < scales.length; ii++) {
-          $('#' + res.modules[i].moduleName.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.modules[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
+          $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.modules[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
         }
 
       }

@@ -1,1 +1,48 @@
-<h1>Module</h1>
+<section>
+  <div class="container">
+    <div class="content-wrap">
+      <h2>Client: {{clientRes.clientId}}</h2>
+      <h2>Module: {{module1}}</h2>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+
+    <div class="content-wrap" id="readings">
+
+      <h2>Readings</h2>
+      <h3>Temperature</h3>
+
+
+    </div>
+
+  </div>
+</section>
+
+
+<script type="text/javascript">
+
+jQuery(document).ready(function($){
+
+  var pathname = window.location.pathname;
+  var pathSplit = pathname.split('/');
+  var moduleId = pathSplit[pathSplit.length-1];
+  var clientId = pathSplit[pathSplit.length-2];
+
+  jQuery.get('/get_data', {"clientId": clientId})
+  .then(function(res){
+    console.log(res);
+
+    
+          $('#readings').append();
+
+  });
+
+
+});
+
+
+</script>
