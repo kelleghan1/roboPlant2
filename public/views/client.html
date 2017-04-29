@@ -1,0 +1,273 @@
+
+
+<section>
+  <div class="container">
+    <div class="content-wrap">
+      <h2>Client: {{clientRes.clientId}}</h2>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+
+    <div class="form-wrap">
+
+      <h2>Create Module</h2>
+      <p>A module is a subject that will have readings allocated to it. Select a name and a type.</p>
+      <form action="/create_module/:data" method="get">
+        <input type="hidden" name="clientId" value="{{clientRes.clientId}}">
+        <label>Module ID</label>
+        <input type="text" name="moduleId" required>
+        <br>
+        <label>Module Type</label>
+        <select id="module-generate-type" class="" name="moduleType" required>
+          <option value="">Select</option>
+        </select>
+        <br>
+        <input type="submit" value="Submit">
+      </form>
+
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="container">
+
+    <div id="modules">
+
+
+
+    </div>
+
+  </div>
+</section>
+
+
+
+
+<div class="graph">
+
+</div>
+
+
+
+<script type="text/javascript">
+
+jQuery(document).ready(function($){
+
+  var clientIdString = window.location.search;
+  var clientIdArr = clientIdString.split('=');
+  var clientId1 = clientIdArr[clientIdArr.length-1];
+  var clientId = clientId1.replace(/\+/g, " ");
+  var sensors = [21, 23];
+  var scales = [22];
+  var types = ['Environmental', 'Tote', 'Trimmer', 'Plant'];
+
+  console.log(clientId1);
+  console.log(clientId);
+
+  for (var i = 0; i < types.length; i++) {
+    $('#module-generate-type').append("<option value='" + types[i] + "'>" + types[i] + "</option>");
+  }
+
+  $('#module-generate-type').append("<option value='other'>Other</option>");
+
+  jQuery.get('/get_data', {"clientId": clientId})
+  .then(function(res){
+
+    if (res.modules.length) {
+
+
+      for (var i = 0; i < res.modules.length; i++) {
+
+        $('#modules').append(
+          "<div class='module-wrap' id='" +
+          res.modules[i].moduleId.replace(' ', '') + "'><h3>" +
+          res.modules[i].moduleId + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
+          "</h3>\
+          <a href='/moduleId/" +
+          res.clientId +
+          "/" +
+          res.modules[i].moduleId +
+          "'>Readings</a>\
+          <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+          res.clientId +
+          "'><input type='hidden' name='moduleId' value='" +
+          res.modules[i].moduleId +
+          "'><input type='submit' value='Submit'></form>\
+          <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+          res.clientId +
+          "'><input type='hidden' name='moduleId' value='" +
+          res.modules[i].moduleId +
+          "'><input type='submit' value='Submit'></form>\
+          <form action='/asign_notes/:data' method='get'><label for='notes'>Notes</label><textarea type='textarea' name='moduleNotes' rows='5'>" +
+          res.modules[i].moduleNotes +
+          "</textarea><input type='hidden' name='clientId' value='" +
+          res.clientId +
+          "'><input type='hidden' name='moduleId' value='" +
+          res.modules[i].moduleId +
+          "'><input type='submit' value='Submit'></form>\
+          <div class='readings'><br> - HUM " +
+
+          (function(){
+            if (res.modules[i].sensorReadings.length !== 0 ) {
+              return res.modules[i].sensorReadings[res.modules[i].sensorReadings.length - 1].hum1;
+            }else{
+              return '';
+            }
+          })() +
+
+          "<br> - TEMP " +
+
+          (function(){
+            if (res.modules[i].sensorReadings.length !== 0 ) {
+              return res.modules[i].sensorReadings[res.modules[i].sensorReadings.length - 1].temp1;
+            }else{
+              return '';
+            }
+          })() +
+
+          "<br> - WEIGHT " +
+
+          (function(){
+            if (res.modules[i].scaleReadings.length !== 0 ) {
+              return res.modules[i].scaleReadings[res.modules[i].scaleReadings.length - 1].weight1;
+            }else{
+              return '';
+            }
+          })() +
+
+          "<br> - LENGTH " +
+
+          (function(){
+            if (res.modules[i].sensorReadings.length !== 0 ) {
+              return res.modules[i].sensorReadings.length;
+            }else{
+              return '';
+            }
+          })() +
+
+          "</div></div>"
+        )
+
+        for (var ii = 0; ii < sensors.length; ii++) {
+          $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.modules[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
+        }
+        for (var ii = 0; ii < scales.length; ii++) {
+          $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.modules[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
+        }
+
+      }
+    }
+
+  })
+
+
+  var myVar = setInterval(function(){ myTimer() }, 30000);
+
+  function myTimer() {
+
+
+    jQuery.get('/get_data', {"clientId": clientId})
+    .then(function(res){
+
+      $('#modules').html('');
+
+      if (res.modules.length) {
+
+
+
+        for (var i = 0; i < res.modules.length; i++) {
+
+          $('#modules').append(
+            "<div class='module-wrap' id='" +
+            res.modules[i].moduleId.replace(' ', '') + "'><h3>" +
+            res.modules[i].moduleId + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
+            "</h3>\
+            <a href='/moduleId/" +
+            res.clientId +
+            "/" +
+            res.modules[i].moduleId +
+            "'>Readings</a>\
+            <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+            res.clientId +
+            "'><input type='hidden' name='moduleId' value='" +
+            res.modules[i].moduleId +
+            "'><input type='submit' value='Submit'></form>\
+            <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
+            res.clientId +
+            "'><input type='hidden' name='moduleId' value='" +
+            res.modules[i].moduleId +
+            "'><input type='submit' value='Submit'></form>\
+            <form action='/asign_notes/:data' method='get'><label for='notes'>Notes</label><textarea type='textarea' name='moduleNotes' rows='5'>" +
+            res.modules[i].moduleNotes +
+            "</textarea><input type='hidden' name='clientId' value='" +
+            res.clientId +
+            "'><input type='hidden' name='moduleId' value='" +
+            res.modules[i].moduleId +
+            "'><input type='submit' value='Submit'></form>\
+            <div class='readings'><br> - HUM " +
+
+            (function(){
+              if (res.modules[i].sensorReadings.length !== 0 ) {
+                return res.modules[i].sensorReadings[res.modules[i].sensorReadings.length - 1].hum1;
+              }else{
+                return '';
+              }
+            })() +
+
+            "<br> - TEMP " +
+
+            (function(){
+              if (res.modules[i].sensorReadings.length !== 0 ) {
+                return res.modules[i].sensorReadings[res.modules[i].sensorReadings.length - 1].temp1;
+              }else{
+                return '';
+              }
+            })() +
+
+            "<br> - WEIGHT " +
+
+            (function(){
+              if (res.modules[i].scaleReadings.length !== 0 ) {
+                return res.modules[i].scaleReadings[res.modules[i].scaleReadings.length - 1].weight1;
+              }else{
+                return '';
+              }
+            })() +
+
+            "<br> - LENGTH " +
+
+            (function(){
+              if (res.modules[i].sensorReadings.length !== 0 ) {
+                return res.modules[i].sensorReadings.length;
+              }else{
+                return '';
+              }
+            })() +
+
+            "</div></div>"
+          )
+
+          for (var ii = 0; ii < sensors.length; ii++) {
+            $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.modules[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
+          }
+          for (var ii = 0; ii < scales.length; ii++) {
+            $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.modules[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
+          }
+
+        }
+
+      }
+
+
+    })
+
+  }
+
+})
+</script>

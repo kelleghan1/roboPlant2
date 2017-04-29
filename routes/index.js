@@ -14,25 +14,26 @@ router.get('/', function(req, res, next) {
 
 
 
-router.get("/submit_id/:data", function(req, res){
+router.post("/submit_id", function(req, res){
   var db = req.db;
   var collection = db.get('usercollection');
-  var id = req.query.clientId;
+  var id = req.body.data;
 
-  console.log('**************', id);
+  console.log('S**************', id);
 
   collection.find({'clientId': id})
   .then(function(clientRes){
+    console.log('DB**************', clientRes);
 
     if (clientRes[0] !== undefined) {
-      res.render('client', { 'clientRes': clientRes[0] });
+      res.send(clientRes);
     } else {
       collection.insert({
         "clientId": id,
         "modules": []
       },
       function(e,success){
-        res.render('client', { clientRes: success });
+        res.send({ insertRes: success });
       })
 
     }
@@ -40,6 +41,34 @@ router.get("/submit_id/:data", function(req, res){
   })
 
 });
+//
+//
+// router.get("/submit_id/:data", function(req, res){
+//   var db = req.db;
+//   var collection = db.get('usercollection');
+//   var id = req.query.clientId;
+//
+//   console.log('**************', id);
+//
+//   collection.find({'clientId': id})
+//   .then(function(clientRes){
+//
+//     if (clientRes[0] !== undefined) {
+//       res.render('client', { 'clientRes': clientRes[0] });
+//     } else {
+//       collection.insert({
+//         "clientId": id,
+//         "modules": []
+//       },
+//       function(e,success){
+//         res.render('client', { clientRes: success });
+//       })
+//
+//     }
+//
+//   })
+//
+// });
 
 
 router.get("/moduleId/:clientId/:moduleId", function(req, res){
@@ -206,33 +235,6 @@ router.post("/post_data/:data", function(req, res){
 
 
   return;
-
-});
-
-
-
-router.get('/test_route', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var clientRes = collection.find({})
-  .then(function(primise){
-    console.log(primise);
-  })
-
-});
-
-router.get('/graph_data', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var clientId = req.query.clientId;
-
-
-  collection.find({'clientId': clientId})
-  .then(function(clientRes){
-
-    res.send(clientRes[0])
-
-  })
 
 });
 
