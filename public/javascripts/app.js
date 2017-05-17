@@ -10,9 +10,17 @@ var thisApp = angular.module('Roboplant', ['ui.router', 'ngResource'])
     templateUrl: 'views/home.html',
     controller: 'HomeController'
   })
+  .state('client', {
+    url: '/client/:clientId',
+    templateUrl: 'views/client.html',
+    controller: 'ClientController',
+    params: {clientExists: null}
+  })
+  .state('module', {
+    url: '/module',
+    templateUrl: 'views/module.html',
+    controller: 'ModuleController',
+    params: {clientId: null, clientExists: null}
+  })
 
 })
-
-// .factory('ClientFactory', function($resource) {
-//   return $resource('/api/entries/:id', {id: 'theID'}); // Note the full endpoint address
-// });

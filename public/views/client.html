@@ -3,7 +3,7 @@
 <section>
   <div class="container">
     <div class="content-wrap">
-      <h2>Client: {{clientRes.clientId}}</h2>
+      <h2>Client: {{clientId}}</h2>
     </div>
   </div>
 </section>
@@ -16,14 +16,14 @@
 
       <h2>Create Module</h2>
       <p>A module is a subject that will have readings allocated to it. Select a name and a type.</p>
-      <form action="/create_module/:data" method="get">
-        <input type="hidden" name="clientId" value="{{clientRes.clientId}}">
+      <form ng-submit="submitModule()">
         <label>Module ID</label>
-        <input type="text" name="moduleId" required>
+        <input type="text" name="moduleId" ng-model="moduleId" required>
         <br>
         <label>Module Type</label>
-        <select id="module-generate-type" class="" name="moduleType" required>
+        <select id="module-generate-type" name="moduleType" ng-model="moduleType" required>
           <option value="">Select</option>
+          <option ng-repeat="type in moduleTypes" value='{{type}}'>{{type}}</option>
         </select>
         <br>
         <input type="submit" value="Submit">
@@ -39,6 +39,36 @@
 
     <div id="modules">
 
+      <div class="module-wrap" ng-repeat="module in modules">
+
+        <h3>{{module.moduleId}}</h3>
+        <h3>{{module.moduleType}}</h3>
+        <a>Readings</a>
+
+        <form ng-submit="updateModule()" name="{{module.moduleId}}" class="" method="post">
+
+          <label for='sensorId'>Assign Sensor</label>
+          <select ng-model="sensorId" class='sensorSelect' name='sensorId'>
+            <option value=''>None</option>
+            <option ng-repeat="sensorId in sensorIds" value="{{sensorId}}">{{sensorId}}</option>
+          </select>
+
+          <label for='scaleId'>Assign Scale</label>
+          <select ng-model="scaleId" class='scaleSelect' name='scaleId'>
+            <option value=''>None</option>
+            <option ng-repeat="scaleId in scaleIds" value="{{scaleId}}">{{scaleId}}</option>
+          </select>
+
+          <label for='notes'>Notes</label>
+          <textarea ng-model="notes" name="" value=""></textarea>
+
+          <input ng-model="moduleId" type="hidden"  name="moduleId" ng-value="{{module.moduleId}}">
+          <input type='submit' value='Submit'>
+
+        </form>
+
+
+      </div>
 
 
     </div>

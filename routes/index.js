@@ -19,21 +19,18 @@ router.post("/submit_id", function(req, res){
   var collection = db.get('usercollection');
   var id = req.body.data;
 
-  console.log('S**************', id);
-
   collection.find({'clientId': id})
   .then(function(clientRes){
-    console.log('DB**************', clientRes);
 
     if (clientRes[0] !== undefined) {
-      res.send(clientRes);
+      res.send({clientExists: true});
     } else {
       collection.insert({
         "clientId": id,
         "modules": []
       },
       function(e,success){
-        res.send({ insertRes: success });
+        res.send({clientExists: false});
       })
 
     }
@@ -41,66 +38,87 @@ router.post("/submit_id", function(req, res){
   })
 
 });
-//
-//
-// router.get("/submit_id/:data", function(req, res){
+
+
+router.post("/get_client", function(req, res){
+  var db = req.db;
+  var collection = db.get('usercollection');
+  var id = req.body.data;
+
+  console.log('GETID**************', id);
+
+  collection.find({'clientId': id})
+  .then(function(clientRes){
+    console.log('GETDB**************', clientRes);
+
+    res.send(clientRes);
+
+  })
+
+});
+
+
+router.post('/create_module', function(req, res, next) {
+  var db = req.db;
+  var collection = db.get('usercollection');
+  var clientId = req.body.data.clientId;
+  var moduleId = req.body.data.moduleId;
+  var moduleType = req.body.data.moduleType;
+
+  console.log(req.body.data.clientId);
+
+  collection.update(
+    {clientId: clientId},
+    { $push:
+      { modules:
+        { moduleId: moduleId, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
+      }
+    }
+  )
+  .then(function(result){
+    console.log('RESULT', result);
+    res.send(result);
+  })
+
+
+
+});
+
+
+// router.get("/moduleId/:clientId/:moduleId", function(req, res){
 //   var db = req.db;
 //   var collection = db.get('usercollection');
-//   var id = req.query.clientId;
-//
-//   console.log('**************', id);
+//   var id = req.params.clientId;
+//   var moduleId = req.params.moduleId;
 //
 //   collection.find({'clientId': id})
 //   .then(function(clientRes){
 //
-//     if (clientRes[0] !== undefined) {
-//       res.render('client', { 'clientRes': clientRes[0] });
-//     } else {
-//       collection.insert({
-//         "clientId": id,
-//         "modules": []
-//       },
-//       function(e,success){
-//         res.render('client', { clientRes: success });
-//       })
-//
-//     }
+//     res.render('module', { 'clientRes': clientRes[0], 'moduleId': moduleId });
 //
 //   })
 //
 // });
 
 
-router.get("/moduleId/:clientId/:moduleId", function(req, res){
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var id = req.params.clientId;
-  var moduleId = req.params.moduleId;
-
-  collection.find({'clientId': id})
-  .then(function(clientRes){
-
-    res.render('module', { 'clientRes': clientRes[0], 'moduleId': moduleId });
-
-  })
-
-});
-
-
-router.get('/get_data', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
-
-  var clientId = req.query.clientId;
-
-  collection.find({'clientId': clientId})
-  .then(function(clientRes){
-
-    res.send(clientRes[0])
-
-  })
-
-});
+// router.post('/get_client', function(req, res, next) {
+//   var db = req.db;
+//   var collection = db.get('usercollection');
+//
+//   var clientId = req;
+//
+//   console.log('GETCLIENT**************', clientId);
+//
+//   collection.find({'clientId': clientId})
+//   .then(function(clientRes){
+//
+//     console.log('GETCLIENTDB**************', clientRes[0]);
+//
+//     res.send(clientRes[0]);
+//
+//   })
+//
+// });
 
 
 router.get('/get_clients', function(req, res, next) {
@@ -115,32 +133,61 @@ router.get('/get_clients', function(req, res, next) {
 });
 
 
-router.get('/create_module/:data', function(req, res, next) {
+// router.get('/create_module/:data', function(req, res, next) {
+//   var db = req.db;
+//   var collection = db.get('usercollection');
+//   var clientId = req.query.clientId;
+//   var moduleId = req.query.moduleId;
+//   var moduleType = req.query.moduleType;
+//
+//   if (moduleId !== '') {
+//
+//     collection.update(
+//       {clientId: clientId},
+//       { $push:
+//         { modules:
+//           { moduleId: moduleId, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
+//         }
+//       }
+//     )
+//     .then(function(result){
+//       res.redirect('back');
+//     })
+//
+//   } else {
+//     res.redirect('back');
+//   }
+//
+// });
+
+
+router.post('/update_module', function(req, res, next) {
   var db = req.db;
   var collection = db.get('usercollection');
-  var clientId = req.query.clientId;
-  var moduleId = req.query.moduleId;
-  var moduleType = req.query.moduleType;
+  var clientId = req.body.data.clientId;
+  var moduleId = req.body.data.moduleId;
+  var moduleType = req.body.data.moduleType;
 
-  if (moduleId !== '') {
+  console.log(req.body.data.clientId);
 
-    collection.update(
-      {clientId: clientId},
-      { $push:
-        { modules:
-          { moduleId: moduleId, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
-        }
+  collection.update(
+    {clientId: clientId},
+    { $push:
+      { modules:
+        { moduleId: moduleId, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
       }
-    )
-    .then(function(result){
-      res.redirect('back');
-    })
+    }
+  )
+  .then(function(result){
+    console.log('RESULT', result);
+    res.send(result);
+  })
 
-  } else {
-    res.redirect('back');
-  }
+
 
 });
+
+
 
 router.get('/asign_sensor/:data', function(req, res, next) {
   var db = req.db;
