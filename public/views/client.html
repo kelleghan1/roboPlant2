@@ -23,7 +23,7 @@
         <label>Module Type</label>
         <select id="module-generate-type" name="moduleType" ng-model="moduleType" required>
           <option value="">Select</option>
-          <option ng-repeat="type in moduleTypes" value='{{type}}'>{{type}}</option>
+          <option ng-repeat="type in moduleTypes" value="{{type}}">{{type}}</option>
         </select>
         <br>
         <input type="submit" value="Submit">
@@ -41,31 +41,60 @@
 
       <div class="module-wrap" ng-repeat="module in modules">
 
-        <h3>{{module.moduleId}}</h3>
-        <h3>{{module.moduleType}}</h3>
-        <a>Readings</a>
+        <h3>{{module.moduleId}} - {{module.moduleType}}</h3>
+        <!-- <h4>Sensor ID: {{module.sensorId}}</h4> -->
+        <!-- <h4>Scale ID: {{module.scaleId}}</h4> -->
+        <h4>Most recent weight: {{module.scaleReadings[0].weight1}}</h4>
+        <h4>Most recent humidity: {{module.sensorReadings[0].hum1}}</h4>
 
-        <form ng-submit="updateModule()" name="{{module.moduleId}}" class="" method="post">
+        <form ng-submit="updateModule()" name="" class="" method="post">
 
-          <label for='sensorId'>Assign Sensor</label>
-          <select ng-model="sensorId" class='sensorSelect' name='sensorId'>
-            <option value=''>None</option>
-            <option ng-repeat="sensorId in sensorIds" value="{{sensorId}}">{{sensorId}}</option>
-          </select>
+          <div class="module-option">
+            <label for='sensorId'>Assign Sensor</label>
+            <select ng-model="modules[$index].sensorId" ng-options="sensorId for sensorId in sensorIds" class="" name="sensorId"></select>
+          </div>
 
-          <label for='scaleId'>Assign Scale</label>
-          <select ng-model="scaleId" class='scaleSelect' name='scaleId'>
-            <option value=''>None</option>
-            <option ng-repeat="scaleId in scaleIds" value="{{scaleId}}">{{scaleId}}</option>
-          </select>
+          <div class="">
+            <label for='scaleId'>Assign Scale</label>
+            <select ng-model="modules[$index].scaleId" ng-options="scaleId for scaleId in scaleIds" class="" name="scaleId"></select>
+          </div>
 
-          <label for='notes'>Notes</label>
-          <textarea ng-model="notes" name="" value=""></textarea>
+          <div class="">
+            <label for='notes'>Notes</label>
+            <textarea ng-model="modules[$index].moduleNotes" name="" value=""></textarea>
+          </div>
 
-          <input ng-model="moduleId" type="hidden"  name="moduleId" ng-value="{{module.moduleId}}">
+          <!-- <input ng-model="moduleId" type="hidden"  name="moduleId" ng-value="{{module.moduleId}}"> -->
           <input type='submit' value='Submit'>
 
         </form>
+
+        <div class="reading-wrap">
+
+          <div class="reading-list">
+            Weight:
+            <div ng-repeat="reading in modules[$index].scaleReadings | orderBy: '-'" class="">
+              {{reading.weight1}}
+            </div>
+          </div>
+
+          <div class="reading-list">
+            Humidity:
+            <div ng-repeat="reading in modules[$index].sensorReadings | orderBy: '-'" class="">
+              {{reading.hum1}}
+            </div>
+          </div>
+
+          <div class="reading-list">
+            Temperature:
+            <div ng-repeat="reading in modules[$index].sensorReadings | orderBy: '-'" class="">
+              {{reading.temp1}}
+            </div>
+          </div>
+
+        </div>
+
+
 
 
       </div>
@@ -76,228 +105,11 @@
   </div>
 </section>
 
+<section>
+  <div class="container">
 
 
 
-<div class="graph">
+  </div>
 
-</div>
-
-
-
-<script type="text/javascript">
-
-jQuery(document).ready(function($){
-
-  var clientIdString = window.location.search;
-  var clientIdArr = clientIdString.split('=');
-  var clientId1 = clientIdArr[clientIdArr.length-1];
-  var clientId = clientId1.replace(/\+/g, " ");
-  var sensors = [21, 23];
-  var scales = [22];
-  var types = ['Environmental', 'Tote', 'Trimmer', 'Plant'];
-
-  console.log(clientId1);
-  console.log(clientId);
-
-  for (var i = 0; i < types.length; i++) {
-    $('#module-generate-type').append("<option value='" + types[i] + "'>" + types[i] + "</option>");
-  }
-
-  $('#module-generate-type').append("<option value='other'>Other</option>");
-
-  jQuery.get('/get_data', {"clientId": clientId})
-  .then(function(res){
-
-    if (res.modules.length) {
-
-
-      for (var i = 0; i < res.modules.length; i++) {
-
-        $('#modules').append(
-          "<div class='module-wrap' id='" +
-          res.modules[i].moduleId.replace(' ', '') + "'><h3>" +
-          res.modules[i].moduleId + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
-          "</h3>\
-          <a href='/moduleId/" +
-          res.clientId +
-          "/" +
-          res.modules[i].moduleId +
-          "'>Readings</a>\
-          <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
-          res.clientId +
-          "'><input type='hidden' name='moduleId' value='" +
-          res.modules[i].moduleId +
-          "'><input type='submit' value='Submit'></form>\
-          <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
-          res.clientId +
-          "'><input type='hidden' name='moduleId' value='" +
-          res.modules[i].moduleId +
-          "'><input type='submit' value='Submit'></form>\
-          <form action='/asign_notes/:data' method='get'><label for='notes'>Notes</label><textarea type='textarea' name='moduleNotes' rows='5'>" +
-          res.modules[i].moduleNotes +
-          "</textarea><input type='hidden' name='clientId' value='" +
-          res.clientId +
-          "'><input type='hidden' name='moduleId' value='" +
-          res.modules[i].moduleId +
-          "'><input type='submit' value='Submit'></form>\
-          <div class='readings'><br> - HUM " +
-
-          (function(){
-            if (res.modules[i].sensorReadings.length !== 0 ) {
-              return res.modules[i].sensorReadings[res.modules[i].sensorReadings.length - 1].hum1;
-            }else{
-              return '';
-            }
-          })() +
-
-          "<br> - TEMP " +
-
-          (function(){
-            if (res.modules[i].sensorReadings.length !== 0 ) {
-              return res.modules[i].sensorReadings[res.modules[i].sensorReadings.length - 1].temp1;
-            }else{
-              return '';
-            }
-          })() +
-
-          "<br> - WEIGHT " +
-
-          (function(){
-            if (res.modules[i].scaleReadings.length !== 0 ) {
-              return res.modules[i].scaleReadings[res.modules[i].scaleReadings.length - 1].weight1;
-            }else{
-              return '';
-            }
-          })() +
-
-          "<br> - LENGTH " +
-
-          (function(){
-            if (res.modules[i].sensorReadings.length !== 0 ) {
-              return res.modules[i].sensorReadings.length;
-            }else{
-              return '';
-            }
-          })() +
-
-          "</div></div>"
-        )
-
-        for (var ii = 0; ii < sensors.length; ii++) {
-          $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.modules[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
-        }
-        for (var ii = 0; ii < scales.length; ii++) {
-          $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.modules[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
-        }
-
-      }
-    }
-
-  })
-
-
-  var myVar = setInterval(function(){ myTimer() }, 30000);
-
-  function myTimer() {
-
-
-    jQuery.get('/get_data', {"clientId": clientId})
-    .then(function(res){
-
-      $('#modules').html('');
-
-      if (res.modules.length) {
-
-
-
-        for (var i = 0; i < res.modules.length; i++) {
-
-          $('#modules').append(
-            "<div class='module-wrap' id='" +
-            res.modules[i].moduleId.replace(' ', '') + "'><h3>" +
-            res.modules[i].moduleId + '' + (function(){ if (res.modules[i].moduleType != '') { return ' - ' + res.modules[i].moduleType; }else{ return ''; }})() +
-            "</h3>\
-            <a href='/moduleId/" +
-            res.clientId +
-            "/" +
-            res.modules[i].moduleId +
-            "'>Readings</a>\
-            <form action='/asign_sensor/:data' method='get'><label for='sensorId'>Assign Sensor</label><select class='sensorSelect' type='text' name='sensorId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
-            res.clientId +
-            "'><input type='hidden' name='moduleId' value='" +
-            res.modules[i].moduleId +
-            "'><input type='submit' value='Submit'></form>\
-            <form action='/asign_scale/:data' method='get'><label for='scaleId'>Assign Scale</label><select class='scaleSelect' type='text' name='scaleId'><option value='none'>None</option></select><input type='hidden' name='clientId' value='" +
-            res.clientId +
-            "'><input type='hidden' name='moduleId' value='" +
-            res.modules[i].moduleId +
-            "'><input type='submit' value='Submit'></form>\
-            <form action='/asign_notes/:data' method='get'><label for='notes'>Notes</label><textarea type='textarea' name='moduleNotes' rows='5'>" +
-            res.modules[i].moduleNotes +
-            "</textarea><input type='hidden' name='clientId' value='" +
-            res.clientId +
-            "'><input type='hidden' name='moduleId' value='" +
-            res.modules[i].moduleId +
-            "'><input type='submit' value='Submit'></form>\
-            <div class='readings'><br> - HUM " +
-
-            (function(){
-              if (res.modules[i].sensorReadings.length !== 0 ) {
-                return res.modules[i].sensorReadings[res.modules[i].sensorReadings.length - 1].hum1;
-              }else{
-                return '';
-              }
-            })() +
-
-            "<br> - TEMP " +
-
-            (function(){
-              if (res.modules[i].sensorReadings.length !== 0 ) {
-                return res.modules[i].sensorReadings[res.modules[i].sensorReadings.length - 1].temp1;
-              }else{
-                return '';
-              }
-            })() +
-
-            "<br> - WEIGHT " +
-
-            (function(){
-              if (res.modules[i].scaleReadings.length !== 0 ) {
-                return res.modules[i].scaleReadings[res.modules[i].scaleReadings.length - 1].weight1;
-              }else{
-                return '';
-              }
-            })() +
-
-            "<br> - LENGTH " +
-
-            (function(){
-              if (res.modules[i].sensorReadings.length !== 0 ) {
-                return res.modules[i].sensorReadings.length;
-              }else{
-                return '';
-              }
-            })() +
-
-            "</div></div>"
-          )
-
-          for (var ii = 0; ii < sensors.length; ii++) {
-            $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.sensorSelect').append("<option value='" + sensors[ii] + "'" + (function(){ if(res.modules[i].sensorId == sensors[ii]){return 'selected'}else{return ''}  } )() + ">" + sensors[ii] + "</option>");
-          }
-          for (var ii = 0; ii < scales.length; ii++) {
-            $('#' + res.modules[i].moduleId.replace(' ', '') ).find('.scaleSelect').append("<option value='" + scales[ii] + "'" + (function(){ if(res.modules[i].scaleId == scales[ii]){return 'selected'}else{return ''}  } )() + ">" + scales[ii] + "</option>");
-          }
-
-        }
-
-      }
-
-
-    })
-
-  }
-
-})
-</script>
+</section>

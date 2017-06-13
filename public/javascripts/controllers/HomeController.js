@@ -16,9 +16,9 @@ thisApp
 
     $scope.submitClient = function(){
       HomeService.submitClient($scope.clientId).then(function(result){
-        console.log(result);
+        // console.log(result);
         if (result.data.clientExists) {
-          console.log('CLIENT EXISTS');
+          // console.log('CLIENT EXISTS');
           $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
         }else{
           $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
@@ -49,12 +49,12 @@ thisApp
     $scope.sensorIds = [21, 23];
     $scope.scaleIds = [22];
 
-    console.log($stateParams);
+    // console.log($stateParams);
 
     // if ($stateParams.clientExists) {
     HomeService.getClient($scope.clientId)
     .then(function(res){
-      console.log('getClient', res);
+      // console.log('getClient', res);
       $scope.modules = res.data[0].modules;
     });
     // }
@@ -67,11 +67,14 @@ thisApp
         moduleType: this.moduleType
       }
 
-      HomeService.submitModule(createModule).then(function(result){
-        console.log(result);
+      console.log('CREATE MODULE', createModule);
+
+      HomeService.submitModule(createModule)
+      .then(function(result){
+        // console.log(result);
         HomeService.getClient($scope.clientId)
         .then(function(res){
-          console.log('getClient', res);
+          // console.log('getClient', res);
           $scope.modules = res.data[0].modules;
         });
       });
@@ -80,21 +83,29 @@ thisApp
 
 
     $scope.updateModule = function(){
-      console.log(this);
+      console.log('THIS', this);
 
       var updateModule = {
         clientId: $scope.clientId,
         moduleId: this.module.moduleId,
         moduleType: this.module.moduleType,
-        moduleNotes: this.notes
+        sensorId: this.module.sensorId,
+        scaleId: this.module.scaleId,
+        moduleNotes: this.module.moduleNotes
       }
 
-      console.log(updateModule);
+      console.log('MODULE OBJ', updateModule);
 
-      HomeService.updateModule(updateModule).then(function(result){
-        console.log(result);
+      HomeService.updateModule(updateModule)
+      .then(function(result){
+        console.log('UPDATE CTRL RESULT', result);
+        HomeService.getClient($scope.clientId)
+        .then(function(res){
+          console.log('GET CLIENT CTRL RESULT', res);
+          $scope.modules = res.data[0].modules;
+        });
+      });
 
-      })
 
 
     }

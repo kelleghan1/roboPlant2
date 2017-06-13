@@ -45,11 +45,11 @@ router.post("/get_client", function(req, res){
   var collection = db.get('usercollection');
   var id = req.body.data;
 
-  console.log('GETID**************', id);
+  // console.log('GETID**************', id);
 
   collection.find({'clientId': id})
   .then(function(clientRes){
-    console.log('GETDB**************', clientRes);
+    // console.log('GETDB**************', clientRes);
 
     res.send(clientRes);
 
@@ -65,7 +65,7 @@ router.post('/create_module', function(req, res, next) {
   var moduleId = req.body.data.moduleId;
   var moduleType = req.body.data.moduleType;
 
-  console.log(req.body.data.clientId);
+  console.log('#############', req.body.data.moduleId);
 
   collection.update(
     {clientId: clientId},
@@ -167,91 +167,122 @@ router.post('/update_module', function(req, res, next) {
   var clientId = req.body.data.clientId;
   var moduleId = req.body.data.moduleId;
   var moduleType = req.body.data.moduleType;
+  var sensorId = parseInt(req.body.data.sensorId);
+  var scaleId = parseInt(req.body.data.scaleId);
+  var moduleNotes = req.body.data.moduleNotes;
 
-  console.log(req.body.data.clientId);
-
-  collection.update(
-    {clientId: clientId},
-    { $push:
-      { modules:
-        { moduleId: moduleId, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
-      }
-    }
-  )
-  .then(function(result){
-    console.log('RESULT', result);
-    res.send(result);
-  })
-
-
-
-});
-
-
-
-router.get('/asign_sensor/:data', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var clientId = req.query.clientId;
-  var moduleId = req.query.moduleId;
-  var sensorId = parseInt(req.query.sensorId);
-
+  console.log('************MOD UPDATE', req.body.data);
 
   collection.update(
     { "modules.sensorId": sensorId },
     { $set: {"modules.$.sensorId": ''} }
   )
+  .then(function(res1){
+    console.log('##########SENSOR ID CLEARED', res1);
+    collection.update(
+      { clientId: clientId, "modules.moduleId": moduleId },
+      { $set: {"modules.$.sensorId": sensorId} }
+    )
+    .then(function(res2){
+      console.log('##########SENSOR ID CHANGED', res2);
+      collection.update(
+        { "modules.scaleId": scaleId },
+        { $set: {"modules.$.scaleId": ''} }
+      )
+      .then(function(res3){
+        console.log('##########SCALE ID CLEARED', res3);
+        collection.update(
+          { clientId: clientId, "modules.moduleId": moduleId },
+          { $set: {"modules.$.scaleId": scaleId} }
+        )
+        .then(function(res4){
+          console.log('##########SCALE ID CHANGED', res4);
+          collection.update(
+            { clientId: clientId, "modules.moduleId": moduleId },
+            { $set: {"modules.$.moduleNotes": moduleNotes} }
+          )
+          .then(function(res5){
+            console.log('##########FINISHED', res5);
+            res.send(req.body.data);
 
-  collection.update(
-    { clientId: clientId, "modules.moduleId": moduleId },
-    { $set: {"modules.$.sensorId": sensorId} }
-  )
-  .then(function(result){
-    res.redirect('back');
+          })
+
+
+        })
+
+      })
+
+    })
+
   })
 
 });
 
-router.get('/asign_scale/:data', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var clientId = req.query.clientId;
-  var moduleId = req.query.moduleId;
-  var scaleId = parseInt(req.query.scaleId);
 
 
-  collection.update(
-    { "modules.scaleId": scaleId },
-    { $set: {"modules.$.scaleId": ''} }
-  )
+// router.get('/asign_sensor/:data', function(req, res, next) {
+//   var db = req.db;
+//   var collection = db.get('usercollection');
+//   var clientId = req.query.clientId;
+//   var moduleId = req.query.moduleId;
+//   var sensorId = parseInt(req.query.sensorId);
+//
+//
+//   collection.update(
+//     { "modules.sensorId": sensorId },
+//     { $set: {"modules.$.sensorId": ''} }
+//   )
+//
+//   collection.update(
+//     { clientId: clientId, "modules.moduleId": moduleId },
+//     { $set: {"modules.$.sensorId": sensorId} }
+//   )
+//   .then(function(result){
+//     res.redirect('back');
+//   })
+//
+// });
 
-  collection.update(
-    { clientId: clientId, "modules.moduleId": moduleId },
-    { $set: {"modules.$.scaleId": scaleId} }
-  )
-  .then(function(result){
-    res.redirect('back');
-  })
+// router.get('/asign_scale/:data', function(req, res, next) {
+//   var db = req.db;
+//   var collection = db.get('usercollection');
+//   var clientId = req.query.clientId;
+//   var moduleId = req.query.moduleId;
+//   var scaleId = parseInt(req.query.scaleId);
+//
+//
+//   collection.update(
+//     { "modules.scaleId": scaleId },
+//     { $set: {"modules.$.scaleId": ''} }
+//   )
+//
+//   collection.update(
+//     { clientId: clientId, "modules.moduleId": moduleId },
+//     { $set: {"modules.$.scaleId": scaleId} }
+//   )
+//   .then(function(result){
+//     res.redirect('back');
+//   })
+//
+// });
 
-});
 
-
-router.get('/asign_notes/:data', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var clientId = req.query.clientId;
-  var moduleId = req.query.moduleId;
-  var moduleNotes = req.query.moduleNotes;
-
-  collection.update(
-    { clientId: clientId, "modules.moduleId": moduleId },
-    { $set: {"modules.$.moduleNotes": moduleNotes} }
-  )
-  .then(function(result){
-    res.redirect('back');
-  })
-
-});
+// router.get('/asign_notes/:data', function(req, res, next) {
+//   var db = req.db;
+//   var collection = db.get('usercollection');
+//   var clientId = req.query.clientId;
+//   var moduleId = req.query.moduleId;
+//   var moduleNotes = req.query.moduleNotes;
+//
+//   collection.update(
+//     { clientId: clientId, "modules.moduleId": moduleId },
+//     { $set: {"modules.$.moduleNotes": moduleNotes} }
+//   )
+//   .then(function(result){
+//     res.redirect('back');
+//   })
+//
+// });
 
 
 router.post("/post_data/:data", function(req, res){
@@ -259,6 +290,9 @@ router.post("/post_data/:data", function(req, res){
   var collection = db.get('usercollection');
   var sensorRequest = req.params.data;
   var obj = JSON.parse(sensorRequest);
+  var date = new Date();
+
+  console.log("#############CURRENT TIME", date);
 
   if (obj.sensorid == 22) {
 
