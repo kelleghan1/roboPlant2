@@ -134,14 +134,23 @@ thisApp
     $http
   ){
 
+
     $scope.clientId = $stateParams.clientId;
     $scope.moduleId = $stateParams.moduleId;
-    var moduleObj = $stateParams.moduleObj;
 
-    console.log(moduleObj);
+    HomeService.getModule($scope.clientId, $scope.moduleId)
+    .then(function(res){
+      console.log('getModule', res);
+    });
 
-    $scope.scaleReadings = moduleObj.scaleReadings;
-    $scope.sensorReadings = moduleObj.sensorReadings;
+
+    // console.log(moduleObj);
+
+
+    // $scope.moduleObj = $stateParams.moduleObj;
+    //
+    // $scope.scaleReadings = moduleObj.scaleReadings;
+    // $scope.sensorReadings = moduleObj.sensorReadings;
 
 
 

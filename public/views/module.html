@@ -20,14 +20,14 @@
       <table>
 
         <tr>
-          <th>Index</th>
+          <th>Time</th>
           <th>ID</th>
           <th>Temp</th>
           <th>Hum</th>
         </tr>
 
         <tr ng-repeat="reading in sensorReadings">
-          <td>index</td>
+          <td>{{reading.serverParseTime.split('T')}}</td>
           <td>id</td>
           <td>{{reading.temp1}}</td>
           <td>{{reading.hum1}}</td>
@@ -43,13 +43,13 @@
 
       <table>
         <tr>
-          <th>Index</th>
+          <th>Time</th>
           <th>ID</th>
           <th>Weight</th>
         </tr>
 
         <tr ng-repeat="reading in scaleReadings">
-          <td>index</td>
+          <td>{{reading.serverParseTime}}</td>
           <td>id</td>
           <td>reading</td>
         </tr>
@@ -60,99 +60,3 @@
 
   </div>
 </section>
-
-<!-- <div class="reading-wrap">
-
-  <div class="reading-list">
-    Weight:
-    <div ng-repeat="reading in modules[$index].scaleReadings | orderBy: '-'" class="">
-      {{reading.weight1}}
-    </div>
-  </div>
-
-  <div class="reading-list">
-    Humidity:
-    <div ng-repeat="reading in modules[$index].sensorReadings | orderBy: '-'" class="">
-      {{reading.hum1}}
-    </div>
-  </div>
-
-  <div class="reading-list">
-    Temperature:
-    <div ng-repeat="reading in modules[$index].sensorReadings | orderBy: '-'" class="">
-      {{reading.temp1}}
-    </div>
-  </div>
-
-</div>
-
- -->
-
-
-<script type="text/javascript">
-
-// jQuery(document).ready(function($){
-//
-//   var pathname = window.location.pathname;
-//   var pathSplit1 = pathname.split('/');
-//   var clientId = pathSplit1[2].replace(/\%20/g, " ");
-//   var moduleId = pathSplit1[pathSplit1.length-1];
-//   var moduleReadingsSensor;
-//   var moduleReadingsScale;
-//
-//   jQuery.get('/get_data', {"clientId": clientId})
-//   .then(function(res){
-//
-//     (function getReadings(){
-//       for (var i = 0; i < res.modules.length; i++) {
-//
-//         if (res.modules[i].moduleId == moduleId) {
-//           moduleReadingsSensor = res.modules[i].sensorReadings;
-//           moduleReadingsScale = res.modules[i].scaleReadings;
-//           return;
-//         }
-//
-//       }
-//     })();
-//
-//
-//     var i = 1;
-//     var j = 1;
-//
-//     while (i < 75 && (moduleReadingsSensor.length-i >= 0)) {
-//       $('#sensorReadings table').append(
-//         '<tr><td>' + i + '</td><td>' + moduleReadingsSensor[moduleReadingsSensor.length-i].sensorid + '</td><td>' + moduleReadingsSensor[moduleReadingsSensor.length-i].temp1 + '</td><td>' + moduleReadingsSensor[moduleReadingsSensor.length-i].hum1 + '</td></tr>'
-//       );
-//       i++;
-//     }
-//
-//     while (j < 75 && (moduleReadingsScale.length-j >=0)) {
-//       $('#scaleReadings table').append(
-//         '<tr><td>' + i + '</td><td>' + moduleReadingsScale[moduleReadingsScale.length-i].sensorid + '</td><td>' + (moduleReadingsScale[moduleReadingsScale.length-j].weight1 * 35.274) + '</td></tr>'
-//       );
-//       j++;
-//     }
-
-
-    //
-    // for (var i = moduleReadingsSensor.length -1; i >= 0; i--) {
-    //   $('#sensorReadings table').append(
-    //     '<tr><td>' + i + '</td><td>' + moduleReadingsSensor[i].sensorid + '</td><td>' + moduleReadingsSensor[i].temp1 + '</td><td>' + moduleReadingsSensor[i].hum1 + '</td></tr>'
-    //   );
-    // }
-    //
-    // for (var i = moduleReadingsScale.length -1; i >= 0; i--) {
-    //   $('#scaleReadings table').append(
-    //     '<tr><td>' + i + '</td><td>' + moduleReadingsScale[i].sensorid + '</td><td>' + (moduleReadingsScale[i].weight1 * 35.274) + '</td></tr>'
-    //   );
-    // }
-
-
-//
-//   });
-//
-//
-// });
-
-
-</script>

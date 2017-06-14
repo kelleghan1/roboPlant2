@@ -2,6 +2,8 @@
 
 var express = require('express');
 var router = express.Router();
+var moment = require('moment');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -52,6 +54,36 @@ router.post("/get_client", function(req, res){
     // console.log('GETDB**************', clientRes);
 
     res.send(clientRes);
+
+  })
+
+});
+
+
+router.post("/get_module", function(req, res){
+  var db = req.db;
+  var collection = db.get('usercollection');
+  var clientId = req.body.clientId;
+  var moduleId = req.body.moduleId;
+  var moduleFinal = null;
+
+
+  console.log('CLIENT ID**************', clientId);
+  console.log('MODULE ID**************', moduleId);
+
+  collection.find({'clientId': clientId})
+  .then(function(moduleRes){
+    console.log('GET MODULE**************', moduleRes[0]);
+
+    for (var i = 0; i < moduleRes[0].modules.length; i++) {
+      if (moduleRes[0].modules[i].moduleId == moduleId) {
+        var moduleFinal = moduleRes[0].modules[i];
+        console.log("************FINAL", moduleFinal);
+        return;
+      }
+    }
+
+    res.send(moduleResult);
 
   })
 
@@ -171,38 +203,31 @@ router.post('/update_module', function(req, res, next) {
   var scaleId = parseInt(req.body.data.scaleId);
   var moduleNotes = req.body.data.moduleNotes;
 
-  console.log('************MOD UPDATE', req.body.data);
-
   collection.update(
     { "modules.sensorId": sensorId },
     { $set: {"modules.$.sensorId": ''} }
   )
   .then(function(res1){
-    console.log('##########SENSOR ID CLEARED', res1);
     collection.update(
       { clientId: clientId, "modules.moduleId": moduleId },
       { $set: {"modules.$.sensorId": sensorId} }
     )
     .then(function(res2){
-      console.log('##########SENSOR ID CHANGED', res2);
       collection.update(
         { "modules.scaleId": scaleId },
         { $set: {"modules.$.scaleId": ''} }
       )
       .then(function(res3){
-        console.log('##########SCALE ID CLEARED', res3);
         collection.update(
           { clientId: clientId, "modules.moduleId": moduleId },
           { $set: {"modules.$.scaleId": scaleId} }
         )
         .then(function(res4){
-          console.log('##########SCALE ID CHANGED', res4);
           collection.update(
             { clientId: clientId, "modules.moduleId": moduleId },
             { $set: {"modules.$.moduleNotes": moduleNotes} }
           )
           .then(function(res5){
-            console.log('##########FINISHED', res5);
             res.send(req.body.data);
 
           })
@@ -290,9 +315,12 @@ router.post("/post_data/:data", function(req, res){
   var collection = db.get('usercollection');
   var sensorRequest = req.params.data;
   var obj = JSON.parse(sensorRequest);
-  var date = new Date();
+  // var date = new Date();
+  var date = moment(new Date());
 
-  console.log("#############CURRENT TIME", date);
+  obj.serverParseTime = date;
+
+  console.log("#############OBJ", date.format('"dddd, MMMM Do YYYY, h:mm:ss a"'));
 
   if (obj.sensorid == 22) {
 

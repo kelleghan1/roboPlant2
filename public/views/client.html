@@ -70,32 +70,6 @@
 
         </form>
 
-        <div class="reading-wrap">
-
-          <div class="reading-list">
-            Weight:
-            <div ng-repeat="reading in modules[$index].scaleReadings | orderBy: '-'" class="">
-              {{reading.weight1}}
-            </div>
-          </div>
-
-          <div class="reading-list">
-            Humidity:
-            <div ng-repeat="reading in modules[$index].sensorReadings | orderBy: '-'" class="">
-              {{reading.hum1}}
-            </div>
-          </div>
-
-          <div class="reading-list">
-            Temperature:
-            <div ng-repeat="reading in modules[$index].sensorReadings | orderBy: '-'" class="">
-              {{reading.temp1}}
-            </div>
-          </div>
-
-        </div>
-
-
 
 
       </div>
