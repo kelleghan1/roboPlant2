@@ -67,8 +67,6 @@ thisApp
         moduleType: this.moduleType
       }
 
-      console.log('CREATE MODULE', createModule);
-
       HomeService.submitModule(createModule)
       .then(function(result){
         // console.log(result);
@@ -83,7 +81,6 @@ thisApp
 
 
     $scope.updateModule = function(){
-      console.log('THIS', this);
 
       var updateModule = {
         clientId: $scope.clientId,
@@ -94,28 +91,19 @@ thisApp
         moduleNotes: this.module.moduleNotes
       }
 
-      console.log('MODULE OBJ', updateModule);
-
       HomeService.updateModule(updateModule)
       .then(function(result){
-        console.log('UPDATE CTRL RESULT', result);
         HomeService.getClient($scope.clientId)
         .then(function(res){
-          console.log('GET CLIENT CTRL RESULT', res);
           $scope.modules = res.data[0].modules;
         });
       });
 
-
-
     }
-
 
     $scope.viewModule = function(){
-      console.log("MODULE THIS", this.module);
       $state.go('module', {clientId: $scope.clientId, moduleId: this.module.moduleId, moduleObj: this.module});
     }
-
 
   }
 ])
@@ -126,34 +114,31 @@ thisApp
   '$state',
   '$scope',
   '$http',
+  'moment',
   function(
     HomeService,
     $stateParams,
     $state,
     $scope,
-    $http
+    $http,
+    moment
   ){
-
 
     $scope.clientId = $stateParams.clientId;
     $scope.moduleId = $stateParams.moduleId;
+    $scope.scaleReadings = null;
+    $scope.sensorReadings = null;
 
     HomeService.getModule($scope.clientId, $scope.moduleId)
     .then(function(res){
-      console.log('getModule', res);
+      $scope.scaleReadings = res.data.scaleReadings;
+      $scope.sensorReadings = res.data.sensorReadings;
+      $scope.time = moment(res.data.sensorReadings[0].serverParseTime._d).format();
     });
 
-
-    // console.log(moduleObj);
-
-
-    // $scope.moduleObj = $stateParams.moduleObj;
-    //
-    // $scope.scaleReadings = moduleObj.scaleReadings;
-    // $scope.sensorReadings = moduleObj.sensorReadings;
-
-
-
+    $scope.getTime = function(){
+      return moment(this.reading.serverParseTime._d).format('MM/DD/YY, h:mm');
+    }
 
   }
 ])

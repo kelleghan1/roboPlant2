@@ -1,8 +1,10 @@
-var thisApp = angular.module('Roboplant', ['ui.router', 'ngResource'])
+var thisApp = angular.module('Roboplant', ['ui.router', 'ngResource', 'angularMoment'])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.otherwise("/");
+  // $momentProvider.asyncLoading(false)
+  // .scriptUrl('node_modules/moment/angular-momentjs.js');
 
   $stateProvider
   .state('home', {

@@ -47,12 +47,8 @@ router.post("/get_client", function(req, res){
   var collection = db.get('usercollection');
   var id = req.body.data;
 
-  // console.log('GETID**************', id);
-
   collection.find({'clientId': id})
   .then(function(clientRes){
-    // console.log('GETDB**************', clientRes);
-
     res.send(clientRes);
 
   })
@@ -67,23 +63,17 @@ router.post("/get_module", function(req, res){
   var moduleId = req.body.moduleId;
   var moduleFinal = null;
 
-
-  console.log('CLIENT ID**************', clientId);
-  console.log('MODULE ID**************', moduleId);
-
   collection.find({'clientId': clientId})
   .then(function(moduleRes){
-    console.log('GET MODULE**************', moduleRes[0]);
 
     for (var i = 0; i < moduleRes[0].modules.length; i++) {
       if (moduleRes[0].modules[i].moduleId == moduleId) {
         var moduleFinal = moduleRes[0].modules[i];
-        console.log("************FINAL", moduleFinal);
+        res.send(moduleFinal);
         return;
       }
     }
 
-    res.send(moduleResult);
 
   })
 
@@ -97,8 +87,6 @@ router.post('/create_module', function(req, res, next) {
   var moduleId = req.body.data.moduleId;
   var moduleType = req.body.data.moduleType;
 
-  console.log('#############', req.body.data.moduleId);
-
   collection.update(
     {clientId: clientId},
     { $push:
@@ -108,7 +96,6 @@ router.post('/create_module', function(req, res, next) {
     }
   )
   .then(function(result){
-    console.log('RESULT', result);
     res.send(result);
   })
 
@@ -319,8 +306,6 @@ router.post("/post_data/:data", function(req, res){
   var date = moment(new Date());
 
   obj.serverParseTime = date;
-
-  console.log("#############OBJ", date.format('"dddd, MMMM Do YYYY, h:mm:ss a"'));
 
   if (obj.sensorid == 22) {
 

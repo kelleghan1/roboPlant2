@@ -21,14 +21,12 @@
 
         <tr>
           <th>Time</th>
-          <th>ID</th>
           <th>Temp</th>
           <th>Hum</th>
         </tr>
 
         <tr ng-repeat="reading in sensorReadings">
-          <td>{{reading.serverParseTime.split('T')}}</td>
-          <td>id</td>
+          <td>{{getTime()}}</td>
           <td>{{reading.temp1}}</td>
           <td>{{reading.hum1}}</td>
         </tr>
@@ -49,8 +47,7 @@
         </tr>
 
         <tr ng-repeat="reading in scaleReadings">
-          <td>{{reading.serverParseTime}}</td>
-          <td>id</td>
+          <td>{{getTime()}}</td>
           <td>reading</td>
         </tr>
 
