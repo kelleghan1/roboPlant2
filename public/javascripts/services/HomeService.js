@@ -7,7 +7,6 @@ thisApp
       return $http.post('/submit_id', {data: clientId})
       .then(
         function(success){
-          console.log("SUBMIT CLIENT SUCCESS", success);
           return success;
         },
         function(error){

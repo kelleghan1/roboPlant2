@@ -16,9 +16,7 @@ thisApp
 
     $scope.submitClient = function(){
       HomeService.submitClient($scope.clientId).then(function(result){
-        // console.log(result);
         if (result.data.clientExists) {
-          // console.log('CLIENT EXISTS');
           $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
         }else{
           $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
@@ -69,10 +67,8 @@ thisApp
 
       HomeService.submitModule(createModule)
       .then(function(result){
-        // console.log(result);
         HomeService.getClient($scope.clientId)
         .then(function(res){
-          // console.log('getClient', res);
           $scope.modules = res.data[0].modules;
         });
       });
@@ -133,11 +129,12 @@ thisApp
     .then(function(res){
       $scope.scaleReadings = res.data.scaleReadings;
       $scope.sensorReadings = res.data.sensorReadings;
-      $scope.time = moment(res.data.sensorReadings[0].serverParseTime._d).format();
     });
-
+    
     $scope.getTime = function(){
-      return moment(this.reading.serverParseTime._d).format('MM/DD/YY, h:mm');
+      if (this.reading.serverParseTime._d) {
+        return moment(this.reading.serverParseTime._d).format('MM/DD/YY, h:mm');
+      }
     }
 
   }
