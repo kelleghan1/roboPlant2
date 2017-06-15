@@ -57,41 +57,47 @@
 
       <div class="module-wrap" ng-repeat="module in modules">
 
-        <div class="module-header" ng-click="showDetails = ! showDetails">
+        <div class="module-header" ng-click="showDetails = !showDetails">
           <h3>{{module.moduleId}} - {{module.moduleType}} &#9660;</h3>
         </div>
 
-        <div class="module-content" ng-if="showDetails" class="animation">
+        <div class="module-content" >
 
-          <p class="view-readings" ng-click="viewModule()">View Readings &#10145;</p>
+          <div class="animation" ng-if="showDetails">
 
-          <!-- <h4>Sensor ID: {{module.sensorId}}</h4> -->
-          <!-- <h4>Scale ID: {{module.scaleId}}</h4> -->
-          <p>Most recent weight: {{module.scaleReadings[0].weight1}}</p>
-          <p>Most recent temperature: {{module.sensorReadings[0].temp1 + ' F'}}</p>
-          <p>Most recent humidity: {{module.sensorReadings[0].hum1 + ' %'}}</p>
 
-          <form ng-submit="updateModule()" name="" class="" method="post">
+            <p class="view-readings" ng-click="viewModule()">View Readings &#10145;</p>
 
-            <div class="module-option">
-              <label for='sensorId'>Assign Sensor</label>
-              <select ng-model="modules[$index].sensorId" ng-options="sensorId for sensorId in sensorIds" class="" name="sensorId"></select>
-            </div>
+            <!-- <h4>Sensor ID: {{module.sensorId}}</h4> -->
+            <!-- <h4>Scale ID: {{module.scaleId}}</h4> -->
+            <p>Most recent weight: {{module.scaleReadings[0].weight1}}</p>
+            <p>Most recent temperature: {{module.sensorReadings[0].temp1 + ' F'}}</p>
+            <p>Most recent humidity: {{module.sensorReadings[0].hum1 + ' %'}}</p>
 
-            <div class="">
-              <label for='scaleId'>Assign Scale</label>
-              <select ng-model="modules[$index].scaleId" ng-options="scaleId for scaleId in scaleIds" class="" name="scaleId"></select>
-            </div>
+            <form ng-submit="updateModule()" name="" class="" method="post">
 
-            <div class="">
-              <label for='notes'>Notes</label>
-              <textarea ng-model="modules[$index].moduleNotes" name="" value=""></textarea>
-            </div>
+              <div class="module-option">
+                <label for='sensorId'>Assign Sensor</label>
+                <select ng-model="modules[$index].sensorId" ng-options="sensorId for sensorId in sensorIds" class="" name="sensorId"></select>
+              </div>
 
-            <!-- <input ng-model="moduleId" type="hidden"  name="moduleId" ng-value="{{module.moduleId}}"> -->
-            <input type='submit' value='Submit'>
+              <div class="">
+                <label for='scaleId'>Assign Scale</label>
+                <select ng-model="modules[$index].scaleId" ng-options="scaleId for scaleId in scaleIds" class="" name="scaleId"></select>
+              </div>
 
-          </form>
+              <div class="">
+                <label for='notes'>Notes</label>
+                <textarea ng-model="modules[$index].moduleNotes" name="" value=""></textarea>
+              </div>
+
+              <!-- <input ng-model="moduleId" type="hidden"  name="moduleId" ng-value="{{module.moduleId}}"> -->
+              <input type='submit' value='Submit'>
+
+            </form>
+
+          </div>
+
 
         </div>
 

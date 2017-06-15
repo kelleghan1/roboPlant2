@@ -65,6 +65,7 @@ thisApp
     $scope.sensorIds = [21, 23];
     $scope.scaleIds = [22];
     // console.log($stateParams);
+    $scope.showDetails = false;
 
     // if ($stateParams.clientExists) {
     HomeService.getClient($scope.clientId)
@@ -74,10 +75,10 @@ thisApp
     });
     // }
 
-    $scope.moduleShow = function(){
-      console.log(this);
-      // console.log(this.$$nextSibling);
-    }
+    // $scope.moduleShow = function(){
+    //   console.log(this);
+    //   $scope.showDetails = !$scope.showDetails;
+    // }
 
     $scope.submitModule = function(){
 

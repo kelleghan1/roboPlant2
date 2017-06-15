@@ -114,9 +114,11 @@ section{
 
 .module-content{
   padding: 15px;
+  overflow: hidden;
 }
-.module-wrap:nth-last-of-type(1){
+.module-wrap{
   /*border-bottom: 1px solid black;*/
+  overflow: hidden;
 }
 
 .module-wrap textarea{
@@ -148,25 +150,37 @@ section{
   color: #fff;
 }
 
-.animation {
-  -webkit-transition: 1s;
-}
-
+/* The starting CSS styles for the enter animation */
 .animation.ng-enter {
-  opacity: 0;
+  transition:0.2s linear all;
+  /*transform:translateY(-100%);*/
+  position: relative;
+  top: -200px;
 }
 
-.animation.ng-leave {
-  opacity: 1;
-}
-
+/* The finishing CSS styles for the enter animation */
 .animation.ng-enter.ng-enter-active {
-  opacity: 1;
+  /*transform:translateY(0%);*/
+  position: relative;
+  top: 0;
 }
 
-.animation.ng-leave.ng-leave-active {
-  opacity: 0;
+/* The starting CSS styles for the enter animation */
+.animation.ng-leave {
+  transition:0.2s linear all;
+  /*transform:translateY(-100%);*/
+  position: relative;
+  top: 0px;
 }
+
+/* The finishing CSS styles for the leave animation */
+.animation.ng-leave.ng-leave-active {
+  /*transform:translateY(0%);*/
+  position: relative;
+  top: -200px;
+}
+
+
 
 @media (max-width: 1200px){
   .container{
