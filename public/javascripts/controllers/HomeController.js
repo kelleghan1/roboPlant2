@@ -6,20 +6,38 @@ thisApp
   '$state',
   '$scope',
   '$http',
+  'prompt',
   function(
     HomeService,
     $stateParams,
     $state,
     $scope,
-    $http
+    $http,
+    prompt
   ){
 
     $scope.submitClient = function(){
       HomeService.submitClient($scope.clientId).then(function(result){
         if (result.data.clientExists) {
-          $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
+
+          prompt({
+            title: 'Access client: ' + $scope.clientId + '?',
+            message: 'Are you sure you want to access ' + $scope.clientId + '?'
+          }).then(function(){
+            //he hit ok and not cancel
+            $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
+          });
+
         }else{
-          $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
+
+          prompt({
+            title: 'Create client: ' + $scope.clientId + '?',
+            message: 'Are you sure you want to create a new client ' + $scope.clientId + '?'
+          }).then(function(){
+            //he hit ok and not cancel
+            $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
+          });
+
         }
       })
     };
@@ -130,7 +148,7 @@ thisApp
       $scope.scaleReadings = res.data.scaleReadings;
       $scope.sensorReadings = res.data.sensorReadings;
     });
-    
+
     $scope.getTime = function(){
       if (this.reading.serverParseTime._d) {
         return moment(this.reading.serverParseTime._d).format('MM/DD/YY, h:mm');

@@ -46,7 +46,8 @@
         <!-- <h4>Sensor ID: {{module.sensorId}}</h4> -->
         <!-- <h4>Scale ID: {{module.scaleId}}</h4> -->
         <h4>Most recent weight: {{module.scaleReadings[0].weight1}}</h4>
-        <h4>Most recent humidity: {{module.sensorReadings[0].hum1}}</h4>
+        <h4>Most recent temperature: {{module.sensorReadings[0].temp1 + ' F'}}</h4>
+        <h4>Most recent humidity: {{module.sensorReadings[0].hum1 + ' %'}}</h4>
 
         <form ng-submit="updateModule()" name="" class="" method="post">
 
