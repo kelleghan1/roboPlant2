@@ -64,7 +64,6 @@ thisApp
     $scope.moduleTypes = ['Environmental', 'Tote', 'Trimmer', 'Plant'];
     $scope.sensorIds = [21, 23];
     $scope.scaleIds = [22];
-
     // console.log($stateParams);
 
     // if ($stateParams.clientExists) {
@@ -74,6 +73,11 @@ thisApp
       $scope.modules = res.data[0].modules;
     });
     // }
+
+    $scope.moduleShow = function(){
+      console.log(this);
+      // console.log(this.$$nextSibling);
+    }
 
     $scope.submitModule = function(){
 
