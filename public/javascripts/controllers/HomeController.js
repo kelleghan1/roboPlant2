@@ -124,6 +124,15 @@ thisApp
       $state.go('module', {clientId: $scope.clientId, moduleId: this.module.moduleId, moduleObj: this.module});
     }
 
+    $scope.syncData = function(){
+      var index = this.$parent.$index;
+      HomeService.getClient($scope.clientId)
+      .then(function(res){
+        $scope.modules[index].scaleReadings = res.data[0].modules[index].scaleReadings;
+        $scope.modules[index].sensorReadings = res.data[0].modules[index].sensorReadings;
+      });
+    }
+
   }
 ])
 
@@ -156,6 +165,7 @@ thisApp
 
     $scope.getTime = function(){
       if (this.reading.serverParseTime._d) {
+
         return moment(this.reading.serverParseTime._d).format('MM/DD/YY, h:mm');
       }
     }

@@ -1,14 +1,28 @@
-
-
 var express = require('express');
 var router = express.Router();
 var moment = require('moment');
+var pg = require('pg');
+var conString = "postgres://postgres:postgres@localhost:5432/cultivato";
 
+var client = new pg.Client(conString);
+client.connect();
+
+// var knex = require('knex');
+
+var knex = require('knex')({
+  client: 'postgres',
+  connection: {
+    host : 'localhost',
+    user : 'postgres',
+    password : 'postgres',
+    database : 'cultivato'
+  }
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
+  // var db = req.db;
+  // var collection = db.get('usercollection');
 
   res.render('index');
 
@@ -17,41 +31,60 @@ router.get('/', function(req, res, next) {
 
 
 router.post("/submit_id", function(req, res){
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var id = req.body.data;
+  console.log("#######################WORKING");
 
-  collection.find({'clientId': id})
-  .then(function(clientRes){
+  // knex.select('title', 'author', 'year').from('clients')
+  // .then(function(res){
+  //   console.log("##############done");
+  // res.send({clientExists: false});
+  //
+  // })
 
-    if (clientRes[0] !== undefined) {
-      res.send({clientExists: true});
-    } else {
-      collection.insert({
-        "clientId": id,
-        "modules": []
-      },
-      function(e,success){
-        res.send({clientExists: false});
-      })
-
-    }
-
+  knex.select('name').from('testingtable')
+  .then(function(res){
+    console.log("$$$$$$$$$$$$$$RES", res);
   })
 
 });
+//
+//
+// router.post("/submit_id", function(req, res){
+//   var db = req.db;
+//   var collection = db.get('usercollection');
+//   var id = req.body.data;
+//
+//   collection.find({'clientId': id})
+//   .then(function(clientRes){
+//
+//     if (clientRes[0] !== undefined) {
+//       res.send({clientExists: true});
+//     } else {
+//       collection.insert({
+//         "clientId": id,
+//         "modules": []
+//       },
+//       function(e,success){
+//         res.send({clientExists: false});
+//       })
+//
+//     }
+//
+//   })
+//
+// });
 
 
 router.post("/get_client", function(req, res){
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var id = req.body.data;
-
-  collection.find({'clientId': id})
-  .then(function(clientRes){
-    res.send(clientRes);
-
-  })
+  console.log("###########################CLIENT");
+  // var db = req.db;
+  // var collection = db.get('usercollection');
+  // var id = req.body.data;
+  //
+  // collection.find({'clientId': id})
+  // .then(function(clientRes){
+  //   res.send(clientRes);
+  //
+  // })
 
 });
 
@@ -297,40 +330,42 @@ router.post('/update_module', function(req, res, next) {
 // });
 
 
-router.post("/post_data/:data", function(req, res){
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var sensorRequest = req.params.data;
-  var obj = JSON.parse(sensorRequest);
-  // var date = new Date();
-  var date = moment(new Date());
-
-  obj.serverParseTime = date;
-
-  if (obj.sensorid == 22) {
-
-    collection.update(
-      {"modules.scaleId": obj.sensorid},
-      { $push:
-        { "modules.$.scaleReadings": obj }
-      }
-    )
-
-  } else {
-
-    collection.update(
-      {"modules.sensorId": obj.sensorid},
-      { $push:
-        { "modules.$.sensorReadings": obj }
-      }
-    )
-
-  }
-
-
-  return;
-
-});
+// router.post("/post_data/:data", function(req, res){
+//   // var db = req.db;
+//   // var collection = db.get('usercollection');
+//   // var sensorRequest = req.params.data;
+//   // var obj = JSON.parse(sensorRequest);
+//   // var date = new Date();
+//   var date = moment(new Date());
+//
+//   console.log("############DATE", date);
+//
+//   obj.serverParseTime = date;
+//
+//   if (obj.sensorid == 22) {
+//
+//     collection.update(
+//       {"modules.scaleId": obj.sensorid},
+//       { $push:
+//         { "modules.$.scaleReadings": obj }
+//       }
+//     )
+//
+//   } else {
+//
+//     collection.update(
+//       {"modules.sensorId": obj.sensorid},
+//       { $push:
+//         { "modules.$.sensorReadings": obj }
+//       }
+//     )
+//
+//   }
+//
+//
+//   return;
+//
+// });
 
 
 

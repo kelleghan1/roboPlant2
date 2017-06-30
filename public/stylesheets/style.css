@@ -1,4 +1,4 @@
-#40C7F6body{
+body{
   background-color: #f7f7f7!important;
   margin: 0;
   padding: 0;
@@ -110,6 +110,7 @@ section{
   padding: 15px;
   margin-top: 15px;
   color: #fff;
+  cursor: pointer;
 }
 
 .module-content{
@@ -148,6 +149,7 @@ section{
   border-radius: 5px;
   display: inline-block;
   color: #fff;
+  cursor: pointer;
 }
 
 /* The starting CSS styles for the enter animation */

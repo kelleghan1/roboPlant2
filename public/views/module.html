@@ -42,13 +42,12 @@
       <table>
         <tr>
           <th>Time</th>
-          <th>ID</th>
           <th>Weight</th>
         </tr>
 
         <tr ng-repeat="reading in scaleReadings">
           <td>{{getTime()}}</td>
-          <td>reading</td>
+          <td>{{reading.weight1}}</td>
         </tr>
 
       </table>

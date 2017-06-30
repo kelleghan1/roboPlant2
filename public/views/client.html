@@ -63,16 +63,19 @@
 
         <div class="module-content" >
 
-          <div class="animation" ng-if="showDetails">
+          <div class="animation" ng-if="!showDetails">
 
 
             <p class="view-readings" ng-click="viewModule()">View Readings &#10145;</p>
+            <p class="view-readings" ng-click="syncData()">Sync Data &#10145;</p>
 
             <!-- <h4>Sensor ID: {{module.sensorId}}</h4> -->
             <!-- <h4>Scale ID: {{module.scaleId}}</h4> -->
-            <p>Most recent weight: {{module.scaleReadings[0].weight1}}</p>
-            <p>Most recent temperature: {{module.sensorReadings[0].temp1 + ' F'}}</p>
-            <p>Most recent humidity: {{module.sensorReadings[0].hum1 + ' %'}}</p>
+            <p>Most recent weight: {{module.scaleReadings[module.scaleReadings.length-1].weight1}}</p>
+            <p>Most recent temperature: {{module.sensorReadings[module.sensorReadings.length-1].temp1 + ' F'}}</p>
+            <p>Most recent humidity: {{module.sensorReadings[module.sensorReadings.length-1].hum1 + ' %'}}</p>
+
+
 
             <form ng-submit="updateModule()" name="" class="" method="post">
 
