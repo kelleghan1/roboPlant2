@@ -157,7 +157,7 @@ section{
   transition:0.2s linear all;
   /*transform:translateY(-100%);*/
   position: relative;
-  top: -200px;
+  top: -250px;
 }
 
 /* The finishing CSS styles for the enter animation */
@@ -179,7 +179,7 @@ section{
 .animation.ng-leave.ng-leave-active {
   /*transform:translateY(0%);*/
   position: relative;
-  top: -200px;
+  top: -250px;
 }
 
 

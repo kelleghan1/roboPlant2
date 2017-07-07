@@ -4,8 +4,9 @@ exports.up = function(knex, Promise) {
     // knex docs references index  ondelete  onupdate  cascade
     table.increments('weight_reading_id');
     table.integer('module_id').notNullable().references('module_id').inTable('modules').onDelete('cascade').onUpdate('cascade');
-    table.integer('weight_reading');
+    table.decimal('weight_reading');
     table.integer('sensor_id');
+    table.date('time');
 
   });
 };

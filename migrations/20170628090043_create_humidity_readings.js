@@ -4,8 +4,9 @@ exports.up = function(knex, Promise) {
     // knex docs references index  ondelete  onupdate  cascade
     table.integer('humidity_reading_id');
     table.integer('module_id').notNullable().references('module_id').inTable('modules').onDelete('cascade').onUpdate('cascade');
-    table.integer('humidity_reading');
+    table.decimal('humidity_reading');
     table.integer('sensor_id');
+    table.date('time');
 
   });
 };

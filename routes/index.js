@@ -47,8 +47,8 @@ router.post("/submit_id", function(req, res){
   })
 
 });
-//
-//
+
+
 // router.post("/submit_id", function(req, res){
 //   var db = req.db;
 //   var collection = db.get('usercollection');
@@ -132,6 +132,7 @@ router.post("/get_client", function(req, res){
 
 
 router.post("/get_module", function(req, res){
+  
   // var db = req.db;
   // var collection = db.get('usercollection');
   // var clientId = req.body.clientId;
@@ -194,26 +195,27 @@ router.get('/get_clients', function(req, res, next) {
 
 
 router.post('/update_module', function(req, res, next) {
-  var clientId = req.body.clientId;
-  var moduleId = req.body.moduleId;
-  var sensorId = req.body.sensorId;
-  var scaleId = req.body.scaleId;
-  var moduleNotes = req.body.moduleNotes;
+  // var clientId = req.body.clientId;
+  // var moduleId = req.body.moduleId;
+  // var sensorId = req.body.sensorId;
+  // var scaleId = req.body.scaleId;
+  // var moduleNotes = req.body.moduleNotes;
 
-  console.log("###########UPDATE REQ", req.body);
-
-  knex('modules').where({sensor_id: sensorId})
+  knex('modules').where({sensor_id: req.body.sensorId})
   .update({sensor_id: 0})
   .then(function(clearSensor){
-    console.log("%%%%%%%%%%%SENSOR CLEARED", clearSensor);
-    knex('modules').where({scale_id: scaleId})
+
+    knex('modules').where({scale_id: req.body.scaleId})
     .update({scale_id: 0})
     .then(function(clearScale){
-      knex('modules').where({module_id: moduleId})
-      .update({sensor_id: sensorId, scale_id: scaleId, module_notes: moduleNotes})
+
+      knex('modules').where({module_id: req.body.moduleId})
+      .update({sensor_id: req.body.sensorId, scale_id: req.body.scaleId, module_notes: req.body.moduleNotes})
       .then(function(moduleResult){
+
         console.log("$$$$$$$UPDATE COMPLETE", moduleResult);
         res.send(moduleResult);
+
       });
 
     });
@@ -325,10 +327,43 @@ router.post('/update_module', function(req, res, next) {
 //   return;
 //
 // });
+
+
 router.post("/post_data/:data", function(req, res){
 
-  console.log("READING");
-  return;
+  var sensorRequest = JSON.parse(req.params.data);
+  var date = moment(new Date());
+
+  console.log("READING", parseFloat(sensorRequest.hum1));
+
+
+  if (sensorRequest.hum1) {
+
+    knex('modules').where({sensor_id: sensorRequest.sensorid})
+    .then(function(moduleResult){
+
+      knex('humidity_readings').insert({module_id: moduleResult[0].module_id, humidity_reading: parseFloat(sensorRequest.hum1)})
+      .then(function(res){
+        console.log("RES", res);
+      })
+      knex('temperature_readings').insert({module_id: moduleResult[0].module_id, temperature_reading: parseFloat(sensorRequest.temp1)})
+      .then(function(res2){
+        console.log("RES", res2);
+      })
+    })
+
+  }
+
+  if (sensorRequest.weight1) {
+
+    knex('modules').where({sensor_id: sensorRequest.sensorid})
+    .then(function(moduleResult){
+
+      knex('weight_readings').insert({module_id: moduleResult[0].module_id, weight_reading: parseFloat(sensorRequest.weight1)});
+
+    });
+
+  }
 
 });
 
