@@ -31,18 +31,19 @@ router.get('/', function(req, res, next) {
 
 
 router.post("/submit_id", function(req, res){
-  console.log("#######################WORKING");
+  knex('clients').where('client_name', req.body.data)
+  .then(function(result){
+    if (!result[0]) {
+      knex('clients').returning('client_id').insert({client_name: req.body.data})
+      .then(function(insertResult){
+        console.log("$$$$$$$$$CLIENT CREATED", insertResult);
+        res.send({clientExists: false, clientId: insertResult[0]});
+      })
+    }else{
+      console.log("$$$$$$$$$CLIENT EXISTS", result);
+      res.send({clientExists: true, clientId: result[0].client_id});
+    }
 
-  // knex.select('title', 'author', 'year').from('clients')
-  // .then(function(res){
-  //   console.log("##############done");
-  // res.send({clientExists: false});
-  //
-  // })
-
-  knex.select('name').from('testingtable')
-  .then(function(res){
-    console.log("$$$$$$$$$$$$$$RES", res);
   })
 
 });
@@ -75,102 +76,109 @@ router.post("/submit_id", function(req, res){
 
 
 router.post("/get_client", function(req, res){
-  console.log("###########################CLIENT");
+  var clientId = req.body.data.clientId;
+  var clientName = req.body.data.clientName;
+  var clientObj = {
+    clientId: clientId,
+    clientName: clientName,
+    modules: []
+  };
+
+  knex('modules').where({client_id: clientId})
+  .then(function(modulesResult){
+
+    var updateModuleLoop = function(i){
+
+      if (i <= modulesResult.length - 1) {
+
+        knex('temperature_readings').where({module_id: modulesResult[i].module_id})
+        .then(function(tempResult){
+
+          modulesResult[i].temperature_readings = tempResult;
+
+          knex('humidity_readings').where({module_id: modulesResult[i].module_id})
+          .then(function(humidityResult){
+
+            modulesResult[i].humidity_readings = humidityResult;
+
+            knex('weight_readings').where({module_id: modulesResult[i].module_id})
+            .then(function(weightResult){
+
+              modulesResult[i].weight_readings = weightResult;
+
+              clientObj.modules.push(modulesResult[i]);
+              updateModuleLoop(i + 1);
+
+            });
+
+          });
+
+        })
+
+      }else{
+
+        res.send(clientObj);
+        return;
+
+      }
+
+    };
+
+    updateModuleLoop(0);
+
+  });
+
+});
+
+
+router.post("/get_module", function(req, res){
   // var db = req.db;
   // var collection = db.get('usercollection');
-  // var id = req.body.data;
+  // var clientId = req.body.clientId;
+  // var moduleId = req.body.moduleId;
+  // var moduleFinal = null;
   //
-  // collection.find({'clientId': id})
-  // .then(function(clientRes){
-  //   res.send(clientRes);
+  // collection.find({'clientId': clientId})
+  // .then(function(moduleRes){
+  //
+  //   for (var i = 0; i < moduleRes[0].modules.length; i++) {
+  //     if (moduleRes[0].modules[i].moduleId == moduleId) {
+  //       var moduleFinal = moduleRes[0].modules[i];
+  //       res.send(moduleFinal);
+  //       return;
+  //     }
+  //   }
+  //
   //
   // })
 
 });
 
 
-router.post("/get_module", function(req, res){
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var clientId = req.body.clientId;
-  var moduleId = req.body.moduleId;
-  var moduleFinal = null;
-
-  collection.find({'clientId': clientId})
-  .then(function(moduleRes){
-
-    for (var i = 0; i < moduleRes[0].modules.length; i++) {
-      if (moduleRes[0].modules[i].moduleId == moduleId) {
-        var moduleFinal = moduleRes[0].modules[i];
-        res.send(moduleFinal);
-        return;
-      }
-    }
-
-
-  })
-
-});
-
-
 router.post('/create_module', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
+
   var clientId = req.body.data.clientId;
-  var moduleId = req.body.data.moduleId;
+  var clientName = req.body.data.clientName;
+  var moduleName = req.body.data.moduleName;
   var moduleType = req.body.data.moduleType;
 
-  collection.update(
-    {clientId: clientId},
-    { $push:
-      { modules:
-        { moduleId: moduleId, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
+  console.log("$$$$$$$$CREATE OBJ", req.body);
+
+  knex('modules').where({client_id: clientId})
+  .then(function(modulesResult){
+    for (var i = 0; i < modulesResult.length; i++) {
+      if (modulesResult[i].module_name == moduleName) {
+        res.send({moduleExists: true});
+        return;
       }
-    }
-  )
-  .then(function(result){
-    res.send(result);
+    };
+    knex('modules').insert({client_id: clientId, module_name: moduleName, module_type: moduleType, sensor_id: 0, scale_id: 0})
+    .then(function(insertResult){
+      res.send(insertResult);
+    })
   })
 
-
-
 });
-
-
-// router.get("/moduleId/:clientId/:moduleId", function(req, res){
-//   var db = req.db;
-//   var collection = db.get('usercollection');
-//   var id = req.params.clientId;
-//   var moduleId = req.params.moduleId;
-//
-//   collection.find({'clientId': id})
-//   .then(function(clientRes){
-//
-//     res.render('module', { 'clientRes': clientRes[0], 'moduleId': moduleId });
-//
-//   })
-//
-// });
-
-
-// router.post('/get_client', function(req, res, next) {
-//   var db = req.db;
-//   var collection = db.get('usercollection');
-//
-//   var clientId = req;
-//
-//   console.log('GETCLIENT**************', clientId);
-//
-//   collection.find({'clientId': clientId})
-//   .then(function(clientRes){
-//
-//     console.log('GETCLIENTDB**************', clientRes[0]);
-//
-//     res.send(clientRes[0]);
-//
-//   })
-//
-// });
 
 
 router.get('/get_clients', function(req, res, next) {
@@ -185,81 +193,32 @@ router.get('/get_clients', function(req, res, next) {
 });
 
 
-// router.get('/create_module/:data', function(req, res, next) {
-//   var db = req.db;
-//   var collection = db.get('usercollection');
-//   var clientId = req.query.clientId;
-//   var moduleId = req.query.moduleId;
-//   var moduleType = req.query.moduleType;
-//
-//   if (moduleId !== '') {
-//
-//     collection.update(
-//       {clientId: clientId},
-//       { $push:
-//         { modules:
-//           { moduleId: moduleId, moduleType: moduleType, moduleNotes: '', sensorId: '', scaleId: '', sensorReadings: [], scaleReadings: [] }
-//         }
-//       }
-//     )
-//     .then(function(result){
-//       res.redirect('back');
-//     })
-//
-//   } else {
-//     res.redirect('back');
-//   }
-//
-// });
-
-
 router.post('/update_module', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
-  var clientId = req.body.data.clientId;
-  var moduleId = req.body.data.moduleId;
-  var moduleType = req.body.data.moduleType;
-  var sensorId = parseInt(req.body.data.sensorId);
-  var scaleId = parseInt(req.body.data.scaleId);
-  var moduleNotes = req.body.data.moduleNotes;
+  var clientId = req.body.clientId;
+  var moduleId = req.body.moduleId;
+  var sensorId = req.body.sensorId;
+  var scaleId = req.body.scaleId;
+  var moduleNotes = req.body.moduleNotes;
 
-  collection.update(
-    { "modules.sensorId": sensorId },
-    { $set: {"modules.$.sensorId": ''} }
-  )
-  .then(function(res1){
-    collection.update(
-      { clientId: clientId, "modules.moduleId": moduleId },
-      { $set: {"modules.$.sensorId": sensorId} }
-    )
-    .then(function(res2){
-      collection.update(
-        { "modules.scaleId": scaleId },
-        { $set: {"modules.$.scaleId": ''} }
-      )
-      .then(function(res3){
-        collection.update(
-          { clientId: clientId, "modules.moduleId": moduleId },
-          { $set: {"modules.$.scaleId": scaleId} }
-        )
-        .then(function(res4){
-          collection.update(
-            { clientId: clientId, "modules.moduleId": moduleId },
-            { $set: {"modules.$.moduleNotes": moduleNotes} }
-          )
-          .then(function(res5){
-            res.send(req.body.data);
+  console.log("###########UPDATE REQ", req.body);
 
-          })
+  knex('modules').where({sensor_id: sensorId})
+  .update({sensor_id: 0})
+  .then(function(clearSensor){
+    console.log("%%%%%%%%%%%SENSOR CLEARED", clearSensor);
+    knex('modules').where({scale_id: scaleId})
+    .update({scale_id: 0})
+    .then(function(clearScale){
+      knex('modules').where({module_id: moduleId})
+      .update({sensor_id: sensorId, scale_id: scaleId, module_notes: moduleNotes})
+      .then(function(moduleResult){
+        console.log("$$$$$$$UPDATE COMPLETE", moduleResult);
+        res.send(moduleResult);
+      });
 
+    });
 
-        })
-
-      })
-
-    })
-
-  })
+  });
 
 });
 
@@ -366,6 +325,12 @@ router.post('/update_module', function(req, res, next) {
 //   return;
 //
 // });
+router.post("/post_data/:data", function(req, res){
+
+  console.log("READING");
+  return;
+
+});
 
 
 

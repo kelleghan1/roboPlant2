@@ -17,25 +17,27 @@ thisApp
   ){
 
     $scope.submitClient = function(){
-      HomeService.submitClient($scope.clientId).then(function(result){
+      HomeService.submitClient($scope.clientName).then(function(result){
+
+        console.log();
         if (result.data.clientExists) {
 
           prompt({
-            title: 'Access client: ' + $scope.clientId + '?',
-            message: 'Are you sure you want to access ' + $scope.clientId + '?'
+            title: 'Access client: ' + $scope.clientName + '?',
+            message: 'Are you sure you want to access ' + $scope.clientName + '?'
           }).then(function(){
             //he hit ok and not cancel
-            $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
+            $state.go('client', {clientName: $scope.clientName, clientExists: result.data.clientExists, clientId: result.data.clientId});
           });
 
         }else{
 
           prompt({
-            title: 'Create client: ' + $scope.clientId + '?',
-            message: 'Are you sure you want to create a new client ' + $scope.clientId + '?'
+            title: 'Create client: ' + $scope.clientName + '?',
+            message: 'Are you sure you want to create a new client ' + $scope.clientName + '?'
           }).then(function(){
             //he hit ok and not cancel
-            $state.go('client', {clientId: $scope.clientId, clientExists: result.data.clientExists});
+            $state.go('client', {clientName: $scope.clientName, clientExists: result.data.clientExists, clientId: result.data.clientId});
           });
 
         }
@@ -51,14 +53,17 @@ thisApp
   '$state',
   '$scope',
   '$http',
+  'prompt',
   function(
     HomeService,
     $stateParams,
     $state,
     $scope,
-    $http
+    $http,
+    prompt
   ){
 
+    $scope.clientName = $stateParams.clientName;
     $scope.clientId = $stateParams.clientId;
     $scope.modules = [];
     $scope.moduleTypes = ['Environmental', 'Tote', 'Trimmer', 'Plant'];
@@ -68,10 +73,11 @@ thisApp
     $scope.showDetails = false;
 
     // if ($stateParams.clientExists) {
-    HomeService.getClient($scope.clientId)
+    HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
     .then(function(res){
       // console.log('getClient', res);
-      $scope.modules = res.data[0].modules;
+      console.log("CONTROLLER MODULES", res);
+      $scope.modules = res.data.modules;
     });
     // }
 
@@ -83,17 +89,36 @@ thisApp
     $scope.submitModule = function(){
 
       var createModule = {
-        clientId: this.clientId,
-        moduleId: this.moduleId,
+        clientId: parseInt($scope.clientId),
+        clientName: $scope.clientName,
+        moduleName: this.moduleName,
         moduleType: this.moduleType
       }
 
+      console.log("$$$$CREATE MOD", createModule);
+
       HomeService.submitModule(createModule)
       .then(function(result){
-        HomeService.getClient($scope.clientId)
+
+        console.log("$$$$$$$CTRLR", result);
+
+        if (result.moduleExists) {
+
+          prompt({
+            title: 'Error',
+            message: 'Module of the same name already exists'
+          }).then(function(){
+            $state.go('client', {clientName: $scope.clientName, clientId: $scope.clientId});
+          });
+
+
+        }
+
+        HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
         .then(function(res){
-          $scope.modules = res.data[0].modules;
+          $scope.modules = res.data.modules;
         });
+
       });
 
     };
@@ -101,20 +126,23 @@ thisApp
 
     $scope.updateModule = function(){
 
+      console.log("THIS", this);
+
       var updateModule = {
-        clientId: $scope.clientId,
-        moduleId: this.module.moduleId,
-        moduleType: this.module.moduleType,
-        sensorId: this.module.sensorId,
-        scaleId: this.module.scaleId,
-        moduleNotes: this.module.moduleNotes
+        clientId: parseInt($scope.clientId),
+        moduleId: this.$parent.module.module_id,
+        sensorId: this.$parent.module.sensor_id,
+        scaleId: this.$parent.module.scale_id,
+        moduleNotes: this.$parent.module.module_notes
       }
+
+      console.log("UPDATE MODULE OBJ", updateModule);
 
       HomeService.updateModule(updateModule)
       .then(function(result){
-        HomeService.getClient($scope.clientId)
+        HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
         .then(function(res){
-          $scope.modules = res.data[0].modules;
+          $scope.modules = res.data.modules;
         });
       });
 
@@ -165,7 +193,6 @@ thisApp
 
     $scope.getTime = function(){
       if (this.reading.serverParseTime._d) {
-
         return moment(this.reading.serverParseTime._d).format('MM/DD/YY, h:mm');
       }
     }

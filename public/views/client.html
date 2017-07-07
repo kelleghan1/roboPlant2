@@ -3,7 +3,7 @@
 <section>
   <div class="container">
     <div class="client-header">
-      <h2>Client: {{clientId}}</h2>
+      <h2>Client: {{clientName}}</h2>
     </div>
   </div>
 </section>
@@ -25,7 +25,7 @@
           <p>A module is a subject that will have readings allocated to it. Select a name and a type.</p>
           <form ng-submit="submitModule()">
             <label>Module ID</label>
-            <input type="text" name="moduleId" ng-model="moduleId" required>
+            <input type="text" name="moduleName" ng-model="moduleName" required>
             <br>
             <label>Module Type</label>
             <select id="module-generate-type" name="moduleType" ng-model="moduleType" required>
@@ -55,10 +55,10 @@
         <h2>Modules</h2>
       </div>
 
-      <div class="module-wrap" ng-repeat="module in modules">
+      <div class="module-wrap" ng-repeat="module in modules | orderBy: 'module_name'">
 
         <div class="module-header" ng-click="showDetails = !showDetails">
-          <h3>{{module.moduleId}} - {{module.moduleType}} &#9660;</h3>
+          <h3>{{::module.module_name}} - {{::module.module_type}} &#9660;</h3>
         </div>
 
         <div class="module-content" >
@@ -69,11 +69,11 @@
             <p class="view-readings" ng-click="viewModule()">View Readings &#10145;</p>
             <p class="view-readings" ng-click="syncData()">Sync Data &#10145;</p>
 
-            <!-- <h4>Sensor ID: {{module.sensorId}}</h4> -->
-            <!-- <h4>Scale ID: {{module.scaleId}}</h4> -->
-            <p>Most recent weight: {{module.scaleReadings[module.scaleReadings.length-1].weight1}}</p>
-            <p>Most recent temperature: {{module.sensorReadings[module.sensorReadings.length-1].temp1 + ' F'}}</p>
-            <p>Most recent humidity: {{module.sensorReadings[module.sensorReadings.length-1].hum1 + ' %'}}</p>
+            <h4>Sensor ID: {{::module.sensor_id || ''}}</h4>
+            <h4>Scale ID: {{::module.scale_id || ''}}</h4>
+            <!-- <p>Most recent weight: {{module.scaleReadings[module.scaleReadings.length-1].weight1}}</p> -->
+            <!-- <p>Most recent temperature: {{module.sensorReadings[module.sensorReadings.length-1].temp1 + ' F'}}</p> -->
+            <!-- <p>Most recent humidity: {{module.sensorReadings[module.sensorReadings.length-1].hum1 + ' %'}}</p> -->
 
 
 
@@ -81,17 +81,17 @@
 
               <div class="module-option">
                 <label for='sensorId'>Assign Sensor</label>
-                <select ng-model="modules[$index].sensorId" ng-options="sensorId for sensorId in sensorIds" class="" name="sensorId"></select>
+                <select ng-model="module.sensor_id" ng-options="sensorId for sensorId in sensorIds" class="" name="sensorId"></select>
               </div>
 
               <div class="">
                 <label for='scaleId'>Assign Scale</label>
-                <select ng-model="modules[$index].scaleId" ng-options="scaleId for scaleId in scaleIds" class="" name="scaleId"></select>
+                <select ng-model="module.scale_id" ng-options="scaleId as scaleId for scaleId in scaleIds" class="" name="scaleId"></select>
               </div>
 
               <div class="">
                 <label for='notes'>Notes</label>
-                <textarea ng-model="modules[$index].moduleNotes" name="" value=""></textarea>
+                <textarea ng-model="module.module_notes" name="" value=""></textarea>
               </div>
 
               <!-- <input ng-model="moduleId" type="hidden"  name="moduleId" ng-value="{{module.moduleId}}"> -->

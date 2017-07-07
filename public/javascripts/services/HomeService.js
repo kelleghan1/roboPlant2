@@ -7,6 +7,7 @@ thisApp
       return $http.post('/submit_id', {data: clientId})
       .then(
         function(success){
+          console.log(success);
           return success;
         },
         function(error){
@@ -19,9 +20,11 @@ thisApp
     submitModule: function(moduleData){
       return $http.post('/create_module', {data: moduleData})
       .then(function(success){
-        return success.data[0];
+        console.log("SUBMIT MOD SUCCESS", success);
+        return success.data;
       },
       function(error){
+        console.log("SUBMIT MOD ERROR", error);
         return error;
       });
     },
@@ -30,9 +33,11 @@ thisApp
     getClient: function(clientId){
       return $http.post('/get_client', {data: clientId})
       .then(function(success){
+        console.log("GET CLIENT SUCCESS", success);
         return success;
       },
       function(error){
+        console.log(error);
         return error;
       });
     },
@@ -50,11 +55,13 @@ thisApp
 
 
     updateModule: function(moduleData){
-      return $http.post('/update_module', {data: moduleData})
+      return $http.post('/update_module', moduleData)
       .then(function(success){
+        console.log("UPDATE SUCCESS", success);
         return success.data[0];
       },
       function(error){
+        console.log(error);
         return error;
       });
     }
