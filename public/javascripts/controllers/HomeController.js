@@ -136,29 +136,36 @@ thisApp
         moduleNotes: this.$parent.module.module_notes
       }
 
-      console.log("UPDATE MODULE OBJ", updateModule);
-
       HomeService.updateModule(updateModule)
       .then(function(result){
+
         HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
         .then(function(res){
+
           $scope.modules = res.data.modules;
+
         });
+
       });
 
     }
 
     $scope.viewModule = function(){
-      $state.go('module', {clientId: $scope.clientId, moduleId: this.module.moduleId, moduleObj: this.module});
+      console.log("this", this);
+      $state.go('module', {clientName: $scope.clientName, moduleName: this.$parent.module.module_name, clientId: $scope.clientId, moduleId: this.$parent.module.module_id , moduleObj: this.$parent.module});
     }
 
     $scope.syncData = function(){
       var index = this.$parent.$index;
+
       HomeService.getClient($scope.clientId)
       .then(function(res){
+
         $scope.modules[index].scaleReadings = res.data[0].modules[index].scaleReadings;
         $scope.modules[index].sensorReadings = res.data[0].modules[index].sensorReadings;
+
       });
+
     }
 
   }
@@ -180,22 +187,34 @@ thisApp
     moment
   ){
 
+    $scope.clientName = $stateParams.clientName;
+    $scope.moduleName = $stateParams.moduleName;
     $scope.clientId = $stateParams.clientId;
     $scope.moduleId = $stateParams.moduleId;
-    $scope.scaleReadings = null;
-    $scope.sensorReadings = null;
+    $scope.moduleObj = $stateParams.moduleObj;
+    $scope.humidityReadings = null;
+    $scope.temperatureReadings = null;
+    $scope.weightReadings = null;
 
     HomeService.getModule($scope.clientId, $scope.moduleId)
     .then(function(res){
-      $scope.scaleReadings = res.data.scaleReadings;
-      $scope.sensorReadings = res.data.sensorReadings;
+
+      console.log("GET MODULE CTRL", res.data);
+
+      $scope.humidityReadings = res.data.humidityReadings;
+      $scope.temperatureReadings = res.data.temperatureReadings;
+      $scope.weightReadings = res.data.weightReadings;
+
     });
 
     $scope.getTime = function(){
-      if (this.reading.serverParseTime._d) {
-        return moment(this.reading.serverParseTime._d).format('MM/DD/YY, h:mm');
+
+      if (this.reading.time) {
+        return moment(this.reading.time).format('MM/DD/YY, h:mm');
       }
+
     }
 
   }
+
 ])

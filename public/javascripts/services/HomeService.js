@@ -46,6 +46,7 @@ thisApp
     getModule: function(clientId, moduleId){
       return $http.post('/get_module', {clientId: clientId, moduleId: moduleId})
       .then(function(success){
+        console.log("GET MODULE SUCCESS", success);
         return success;
       },
       function(error){

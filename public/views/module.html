@@ -3,8 +3,8 @@
 <section>
   <div class="container">
     <div class="content-wrap">
-      <h2>Client: {{clientId}}</h2>
-      <h2>Module: {{moduleId}}</h2>
+      <h2>Client: {{clientName}}</h2>
+      <h2>Module: {{moduleName}}</h2>
     </div>
   </div>
 </section>
@@ -15,39 +15,63 @@
 
     <div class="content-wrap" id="sensorReadings">
 
-      <h3>Sensor Readings</h3>
+      <h3>Temperature Readings</h3>
 
       <table>
 
         <tr>
+          <th>ID</th>
           <th>Time</th>
           <th>Temp</th>
-          <th>Hum</th>
         </tr>
 
-        <tr ng-repeat="reading in sensorReadings">
+        <tr ng-repeat="reading in temperatureReadings">
+          <td>{{reading.temperature_reading_id}}</td>
           <td>{{getTime()}}</td>
-          <td>{{reading.temp1 + " F"}}</td>
-          <td>{{reading.hum1}}</td>
+          <td>{{reading.temperature_reading + " %"}}</td>
         </tr>
 
       </table>
 
     </div>
 
-    <div class="content-wrap" id="scaleReadings">
+    <div class="content-wrap" id="humReadings">
 
-      <h3>Scale Readings</h3>
+      <h3>Humidity Readings</h3>
+
+      <table>
+
+        <tr>
+          <th>ID</th>
+          <th>Time</th>
+          <th>Hum</th>
+        </tr>
+
+        <tr ng-repeat="reading in humidityReadings">
+          <td>{{reading.humidity_reading_id}}</td>
+          <td>{{getTime()}}</td>
+          <td>{{reading.humidity_reading + " %"}}</td>
+        </tr>
+
+      </table>
+
+    </div>
+
+    <div class="content-wrap" id="weightReadings">
+
+      <h3>Weight Readings</h3>
 
       <table>
         <tr>
+          <th>ID</th>
           <th>Time</th>
           <th>Weight</th>
         </tr>
 
-        <tr ng-repeat="reading in scaleReadings">
+        <tr ng-repeat="reading in weightReadings">
+          <td>{{reading.weight_reading_id}}</td>
           <td>{{getTime()}}</td>
-          <td>{{reading.weight1}}</td>
+          <td>{{reading.weight_reading}}</td>
         </tr>
 
       </table>

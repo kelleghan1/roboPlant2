@@ -26,7 +26,7 @@ var thisApp = angular.module('Roboplant', [
     params: {clientExists: null}
   })
   .state('module', {
-    url: '/module/:clientName/:moduleName',
+    url: '/module/:clientName/:moduleName/:clientId/:moduleId',
     templateUrl: 'views/module.html',
     controller: 'ModuleController',
     params: {moduleObj: null}
