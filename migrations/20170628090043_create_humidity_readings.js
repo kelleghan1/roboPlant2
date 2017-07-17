@@ -6,7 +6,7 @@ exports.up = function(knex, Promise) {
     table.integer('module_id').notNullable().references('module_id').inTable('modules').onDelete('cascade').onUpdate('cascade');
     table.decimal('humidity_reading');
     table.integer('sensor_id');
-    table.date('time');
+    table.timestamp('time');
 
   });
 };

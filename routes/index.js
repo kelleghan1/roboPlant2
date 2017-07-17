@@ -347,6 +347,8 @@ router.post("/post_data/:data", function(req, res){
   var sensorRequest = JSON.parse(req.params.data);
   var date = moment(new Date());
 
+  console.log("$$$$$$$$$$$$$$$THE DATE", date);
+
   // console.log("$$$$$$$$$$$$$$$", sensorRequest);
 
   if (sensorRequest.hum1) {

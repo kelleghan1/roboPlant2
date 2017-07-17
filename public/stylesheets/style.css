@@ -23,14 +23,14 @@ th{
   text-align: left;
   background-color: #ccc;
   width: 25%;
-  padding: 5px;
+  padding: 5px!important;
   box-sizing: border-box;
 }
 
 td{
   text-align: left;
   width: 25%;
-  padding: 5px;
+  padding: 5px!important;
   box-sizing: border-box;
 
 }
@@ -72,7 +72,10 @@ section{
   background-color: #73A742;
   color: #fff;
   padding: 15px;
+}
 
+.section-header > p, .client-header > p, .module-header > p{
+  margin-bottom: 0;
 }
 
 .container{
@@ -108,7 +111,7 @@ section{
 .module-header{
   background-color: #73A742;
   padding: 15px;
-  margin-top: 15px;
+  margin-top: 10px;
   color: #fff;
   cursor: pointer;
 }

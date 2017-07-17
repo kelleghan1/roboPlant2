@@ -1,7 +1,7 @@
 
 
 <section>
-  <div class="container">
+  <div class="container" id="module_info">
     <div class="content-wrap">
       <h2>Client: {{clientName}}</h2>
       <h2>Module: {{moduleName}}</h2>
@@ -13,7 +13,7 @@
 <section>
   <div class="container">
 
-    <div class="content-wrap" id="sensorReadings">
+    <div class="content-wrap" id="tempReadings">
 
       <h3>Temperature Readings</h3>
 
@@ -28,7 +28,7 @@
         <tr ng-repeat="reading in temperatureReadings">
           <td>{{reading.temperature_reading_id}}</td>
           <td>{{getTime()}}</td>
-          <td>{{reading.temperature_reading + " %"}}</td>
+          <td>{{reading.temperature_reading + " F"}}</td>
         </tr>
 
       </table>
