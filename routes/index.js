@@ -55,8 +55,6 @@ router.post("/submit_id", function(req, res){
 
 
 router.post("/get_client", function(req, res){
-  // var clientId = req.body.data.clientId;
-  // var clientName = req.body.data.clientName;
 
   var clientObj = {
     clientId: req.body.data.clientId,
@@ -113,15 +111,10 @@ router.post("/get_client", function(req, res){
 
 router.post("/get_module", function(req, res){
 
-
-  console.log("^^^^^^^^^^^^^^^^^^^^^^^req.body", req.body);
-
   var moduleObj = {};
 
   knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(200)
   .then(function(temperatureResult){
-
-    // console.log("%%%%%%%%%%%TEMP RESULT", temperatureResult);
 
     moduleObj.temperatureReadings = temperatureResult;
 
@@ -134,7 +127,6 @@ router.post("/get_module", function(req, res){
       .then(function(weightResult){
 
         moduleObj.weightReadings = weightResult;
-        // console.log("***********OBJ", moduleObj);
         res.send(moduleObj);
 
       });
@@ -157,16 +149,19 @@ router.post('/create_module', function(req, res, next) {
 
   knex('modules').where({client_id: clientId})
   .then(function(modulesResult){
+
     for (var i = 0; i < modulesResult.length; i++) {
       if (modulesResult[i].module_name == moduleName) {
         res.send({moduleExists: true});
         return;
       }
     };
+
     knex('modules').insert({client_id: clientId, module_name: moduleName, module_type: moduleType, sensor_id: 0, scale_id: 0})
     .then(function(insertResult){
       res.send(insertResult);
     })
+
   })
 
 });
@@ -174,11 +169,6 @@ router.post('/create_module', function(req, res, next) {
 
 
 router.post('/update_module', function(req, res, next) {
-  // var clientId = req.body.clientId;
-  // var moduleId = req.body.moduleId;
-  // var sensorId = req.body.sensorId;
-  // var scaleId = req.body.scaleId;
-  // var moduleNotes = req.body.moduleNotes;
 
   knex('modules').where({sensor_id: req.body.sensorId})
   .update({sensor_id: 0})
@@ -209,17 +199,12 @@ router.post("/post_data/:data", function(req, res){
   var sensorRequest = JSON.parse(req.params.data);
   var date = moment(new Date());
 
-  // console.log("$$$$$$$$$$$$$$$", sensorRequest);
-
   if (sensorRequest.hum1) {
 
     knex('modules').where({sensor_id: sensorRequest.sensorid})
     .then(function(moduleResult){
 
-      // console.log("##########MOD RESULT", moduleResult);
-
       if (moduleResult.length) {
-
 
         knex('humidity_readings').insert({module_id: moduleResult[0].module_id, humidity_reading: parseFloat(sensorRequest.hum1), sensor_id: sensorRequest.sensorid, time: date})
         .then(function(res){
@@ -234,10 +219,12 @@ router.post("/post_data/:data", function(req, res){
             io.emit('temperature', parseFloat(sensorRequest.temp1) + '');
 
             return;
-          })
-        })
-      }
 
+          })
+
+        })
+
+      }
 
     })
 
@@ -255,8 +242,8 @@ router.post("/post_data/:data", function(req, res){
           io.emit('weight', parseFloat(sensorRequest.weight1) + '');
 
           return;
-        })
 
+        })
 
       }
 
@@ -265,9 +252,6 @@ router.post("/post_data/:data", function(req, res){
   }
 
 });
-
-
-
 
 
 
