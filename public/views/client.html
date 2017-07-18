@@ -71,9 +71,9 @@
 
             <p>Sensor ID: {{::module.sensor_id || ''}}</p>
             <p>Scale ID: {{::module.scale_id || ''}}</p>
-            <!-- <p>Most recent weight: {{module.scaleReadings[module.scaleReadings.length-1].weight1}}</p> -->
-            <!-- <p>Most recent temperature: {{module.sensorReadings[module.sensorReadings.length-1].temp1 + ' F'}}</p> -->
-            <!-- <p>Most recent humidity: {{module.sensorReadings[module.sensorReadings.length-1].hum1 + ' %'}}</p> -->
+            <p>Most recent weight: {{module.weight_reading ? module.weight_reading + '' : ''}}</p>
+            <p>Most recent temperature: {{module.temperature_reading ? module.temperature_reading + ' F' : ''}}</p>
+            <p>Most recent humidity: {{module.humidity_reading ? module.humidity_reading + ' %' : ''}}</p>
 
 
 

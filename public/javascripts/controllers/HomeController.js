@@ -5,6 +5,7 @@ thisApp
   '$stateParams',
   '$state',
   '$scope',
+  '$rootScope',
   '$http',
   'prompt',
   function(
@@ -12,12 +13,19 @@ thisApp
     $stateParams,
     $state,
     $scope,
+    $rootScope,
     $http,
     prompt
   ){
 
+    $rootScope.loading = false;
+
     $scope.submitClient = function(){
+      $rootScope.loading = true;
+
       HomeService.submitClient($scope.clientName).then(function(result){
+
+        $rootScope.loading = false;
 
         console.log();
         if (result.data.clientExists) {
@@ -52,6 +60,7 @@ thisApp
   '$stateParams',
   '$state',
   '$scope',
+  '$rootScope',
   '$http',
   'prompt',
   function(
@@ -59,6 +68,7 @@ thisApp
     $stateParams,
     $state,
     $scope,
+    $rootScope,
     $http,
     prompt
   ){
@@ -72,10 +82,15 @@ thisApp
     // console.log($stateParams);
     $scope.showDetails = false;
 
+    $rootScope.loading = true;
+
+
     // if ($stateParams.clientExists) {
     HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
     .then(function(res){
-      // console.log('getClient', res);
+
+      $rootScope.loading = false;
+
       console.log("CONTROLLER MODULES", res);
       $scope.modules = res.data.modules;
     });
@@ -88,6 +103,8 @@ thisApp
 
     $scope.submitModule = function(){
 
+      $rootScope.loading = true;
+
       var createModule = {
         clientId: parseInt($scope.clientId),
         clientName: $scope.clientName,
@@ -95,10 +112,9 @@ thisApp
         moduleType: this.moduleType
       }
 
-      console.log("$$$$CREATE MOD", createModule);
-
       HomeService.submitModule(createModule)
       .then(function(result){
+
 
         console.log("$$$$$$$CTRLR", result);
 
@@ -116,6 +132,9 @@ thisApp
 
         HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
         .then(function(res){
+
+          $rootScope.loading = false;
+
           $scope.modules = res.data.modules;
         });
 
@@ -125,6 +144,9 @@ thisApp
 
 
     $scope.updateModule = function(){
+
+      $rootScope.loading = true;
+
 
       console.log("THIS", this);
 
@@ -143,6 +165,9 @@ thisApp
         .then(function(res){
 
           $scope.modules = res.data.modules;
+
+          $rootScope.loading = false;
+
 
         });
 
@@ -176,6 +201,7 @@ thisApp
   '$stateParams',
   '$state',
   '$scope',
+  '$rootScope',
   '$http',
   'moment',
   function(
@@ -183,6 +209,7 @@ thisApp
     $stateParams,
     $state,
     $scope,
+    $rootScope,
     $http,
     moment
   ){
@@ -196,6 +223,9 @@ thisApp
     $scope.temperatureReadings = null;
     $scope.weightReadings = null;
 
+    $rootScope.loading = true;
+
+
     HomeService.getModule($scope.clientId, $scope.moduleId)
     .then(function(res){
 
@@ -204,6 +234,9 @@ thisApp
       $scope.humidityReadings = res.data.humidityReadings;
       $scope.temperatureReadings = res.data.temperatureReadings;
       $scope.weightReadings = res.data.weightReadings;
+
+      $rootScope.loading = false;
+
 
     });
 

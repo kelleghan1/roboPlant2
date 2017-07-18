@@ -53,31 +53,6 @@ router.post("/submit_id", function(req, res){
 });
 
 
-// router.post("/submit_id", function(req, res){
-//   var db = req.db;
-//   var collection = db.get('usercollection');
-//   var id = req.body.data;
-//
-//   collection.find({'clientId': id})
-//   .then(function(clientRes){
-//
-//     if (clientRes[0] !== undefined) {
-//       res.send({clientExists: true});
-//     } else {
-//       collection.insert({
-//         "clientId": id,
-//         "modules": []
-//       },
-//       function(e,success){
-//         res.send({clientExists: false});
-//       })
-//
-//     }
-//
-//   })
-//
-// });
-
 
 router.post("/get_client", function(req, res){
   // var clientId = req.body.data.clientId;
@@ -96,20 +71,20 @@ router.post("/get_client", function(req, res){
 
       if (i <= modulesResult.length - 1) {
 
-        knex('temperature_readings').where({module_id: modulesResult[i].module_id})
+        knex('temperature_readings').where({module_id: modulesResult[i].module_id}).orderBy('time', 'desc').first()
         .then(function(tempResult){
 
-          modulesResult[i].temperature_readings = tempResult;
+          modulesResult[i].temperature_reading = tempResult != undefined ? tempResult.temperature_reading : null;
 
-          knex('humidity_readings').where({module_id: modulesResult[i].module_id})
+          knex('humidity_readings').where({module_id: modulesResult[i].module_id}).orderBy('time', 'desc').first()
           .then(function(humidityResult){
 
-            modulesResult[i].humidity_readings = humidityResult;
+            modulesResult[i].humidity_reading = humidityResult != undefined ? humidityResult.humidity_reading : null;
 
-            knex('weight_readings').where({module_id: modulesResult[i].module_id})
+            knex('weight_readings').where({module_id: modulesResult[i].module_id}).orderBy('time', 'desc').first()
             .then(function(weightResult){
 
-              modulesResult[i].weight_readings = weightResult;
+              modulesResult[i].weight_reading = weightResult != undefined ? weightResult.weight_reading : null;
 
               clientObj.modules.push(modulesResult[i]);
               updateModuleLoop(i + 1);
@@ -143,21 +118,23 @@ router.post("/get_module", function(req, res){
 
   var moduleObj = {};
 
-  knex('temperature_readings').where({module_id: req.body.moduleId})
+  knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(200)
   .then(function(temperatureResult){
+
+    // console.log("%%%%%%%%%%%TEMP RESULT", temperatureResult);
 
     moduleObj.temperatureReadings = temperatureResult;
 
-    knex('humidity_readings').where({module_id: req.body.moduleId})
+    knex('humidity_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(200)
     .then(function(humidityResult){
 
       moduleObj.humidityReadings = humidityResult;
 
-      knex('weight_readings').where({module_id: req.body.moduleId})
+      knex('weight_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(200)
       .then(function(weightResult){
 
         moduleObj.weightReadings = weightResult;
-        console.log("***********OBJ", moduleObj);
+        // console.log("***********OBJ", moduleObj);
         res.send(moduleObj);
 
       });
@@ -194,17 +171,6 @@ router.post('/create_module', function(req, res, next) {
 
 });
 
-
-router.get('/get_clients', function(req, res, next) {
-  var db = req.db;
-  var collection = db.get('usercollection');
-
-  collection.find()
-  .then(function(clientRes){
-    res.send(clientRes);
-  });
-
-});
 
 
 router.post('/update_module', function(req, res, next) {
@@ -346,8 +312,6 @@ router.post("/post_data/:data", function(req, res){
 
   var sensorRequest = JSON.parse(req.params.data);
   var date = moment(new Date());
-
-  console.log("$$$$$$$$$$$$$$$THE DATE", date);
 
   // console.log("$$$$$$$$$$$$$$$", sensorRequest);
 

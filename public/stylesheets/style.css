@@ -52,6 +52,27 @@ header{
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 5px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+#loading{
+  background-color: rgba(0,0,0,0.1);
+  text-align: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+}
+#loading > #loading-wrap{
+  display: inline-block;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #fff;
+  margin-top: 100px;
+}
+#loading > #loading-wrap > img{
 }
 
 #logo-wrap{
