@@ -61,10 +61,9 @@
           <p>{{::module.module_name}} - {{::module.module_type}} &#9660;</p>
         </div>
 
-        <div class="module-content" >
+        <div class="module-content">
 
           <div class="animation" ng-if="!showDetails">
-
 
             <p class="view-readings" ng-click="viewModule()">View Readings &#10145;</p>
             <p class="view-readings" ng-click="syncData()">Sync Data &#10145;</p>
@@ -72,17 +71,9 @@
             <p>Sensor ID: {{::module.sensor_id || ''}}</p>
             <p>Scale ID: {{::module.scale_id || ''}}</p>
 
-
-            <p>Most recent weight: {{currentWeight}}</p>
-            <p>Most recent temperature: {{currentTemp}}</p>
-            <p>Most recent humidity: {{currentHum}}</p>
-
-
-            <!-- <p>Most recent weight: {{module.weight_reading ? module.weight_reading + '' : ''}}</p>
+            <p>Most recent weight: {{module.weight_reading ? module.weight_reading + '' : ''}}</p>
             <p>Most recent temperature: {{module.temperature_reading ? module.temperature_reading + ' F' : ''}}</p>
-            <p>Most recent humidity: {{module.humidity_reading ? module.humidity_reading + ' %' : ''}}</p> -->
-
-
+            <p>Most recent humidity: {{module.humidity_reading ? module.humidity_reading + ' %' : ''}}</p>
 
             <form ng-submit="updateModule()" name="" class="" method="post">
 

@@ -7,8 +7,6 @@ var conString = "postgres://postgres:postgres@localhost:5432/cultivato";
 var client = new pg.Client(conString);
 client.connect();
 
-// var knex = require('knex');
-
 var knex = require('knex')({
   client: 'postgres',
   connection: {
@@ -19,20 +17,20 @@ var knex = require('knex')({
   }
 });
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
   res.render('index');
-
 });
 
 
-
 router.post("/submit_id", function(req, res){
+
   knex('clients').where('client_name', req.body.data)
   .then(function(result){
 
     if (!result[0]) {
+
       knex('clients').returning('client_id').insert({client_name: req.body.data})
       .then(function(insertResult){
 
@@ -41,7 +39,7 @@ router.post("/submit_id", function(req, res){
 
       });
 
-    }else{
+    } else {
 
       console.log("$$$$$$$$$CLIENT EXISTS", result);
       res.send({clientExists: true, clientId: result[0].client_id});
@@ -51,7 +49,6 @@ router.post("/submit_id", function(req, res){
   })
 
 });
-
 
 
 router.post("/get_client", function(req, res){
@@ -93,7 +90,7 @@ router.post("/get_client", function(req, res){
 
         })
 
-      }else{
+      } else {
 
         res.send(clientObj);
         return;
@@ -145,8 +142,6 @@ router.post('/create_module', function(req, res, next) {
   var moduleName = req.body.data.moduleName;
   var moduleType = req.body.data.moduleType;
 
-  console.log("$$$$$$$$CREATE OBJ", req.body);
-
   knex('modules').where({client_id: clientId})
   .then(function(modulesResult){
 
@@ -165,7 +160,6 @@ router.post('/create_module', function(req, res, next) {
   })
 
 });
-
 
 
 router.post('/update_module', function(req, res, next) {
@@ -210,23 +204,23 @@ router.post("/post_data/:data", function(req, res){
         .then(function(res){
 
           var io = req.app.get('socketio');
-          io.emit('humidity', parseFloat(sensorRequest.hum1) + '');
+          io.emit('humidity', { clientId: moduleResult[0].client_id, moduleId: moduleResult[0].module_id, humidity: parseFloat(sensorRequest.hum1) + ''});
 
           knex('temperature_readings').insert({module_id: moduleResult[0].module_id, temperature_reading: parseFloat(sensorRequest.temp1), sensor_id: sensorRequest.sensorid, time: date})
           .then(function(res1){
 
             var io = req.app.get('socketio');
-            io.emit('temperature', parseFloat(sensorRequest.temp1) + '');
+            io.emit('temperature', {clientId: moduleResult[0].client_id, moduleId: moduleResult[0].module_id, temperature: parseFloat(sensorRequest.temp1) + ''});
 
             return;
 
-          })
+          });
 
-        })
+        });
 
-      }
+      };
 
-    })
+    });
 
   } else if (sensorRequest.weight1) {
 
@@ -239,17 +233,17 @@ router.post("/post_data/:data", function(req, res){
         .then(function(res3){
 
           var io = req.app.get('socketio');
-          io.emit('weight', parseFloat(sensorRequest.weight1) + '');
+          io.emit('weight', {clientId: moduleResult[0].client_id, moduleId: moduleResult[0].module_id, weight: parseFloat(sensorRequest.weight1) + ''});
 
           return;
 
-        })
+        });
 
-      }
+      };
 
     });
 
-  }
+  };
 
 });
 

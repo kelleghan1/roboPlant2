@@ -1,3 +1,7 @@
+* {
+  transition:0.2s linear all;
+}
+
 body{
   background-color: #f1f1f1!important;
   margin: 0;
@@ -22,14 +26,14 @@ th{
   text-align: left;
   background-color: #ccc;
   width: 25%;
-  padding: 5px!important;
+  padding: 15px!important;
   box-sizing: border-box;
 }
 
 td{
   text-align: left;
   width: 25%;
-  padding: 5px!important;
+  padding: 15px!important;
   box-sizing: border-box;
 
 }
@@ -141,7 +145,6 @@ section{
   overflow: hidden;
 }
 .module-wrap{
-  /*border-bottom: 1px solid black;*/
   overflow: hidden;
 }
 
@@ -180,7 +183,7 @@ section{
   transition:0.2s linear all;
   /*transform:translateY(-100%);*/
   position: relative;
-  top: -250px;
+  top: -500px;
 }
 
 /* The finishing CSS styles for the enter animation */
@@ -202,7 +205,7 @@ section{
 .animation.ng-leave.ng-leave-active {
   /*transform:translateY(0%);*/
   position: relative;
-  top: -250px;
+  top: -500px;
 }
 
 

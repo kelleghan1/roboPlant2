@@ -52,9 +52,6 @@ thisApp
       })
     };
 
-
-
-
     var socket = io.connect('http://192.168.0.106:4200');
     socket.on('connect', function(data) {
       socket.emit('join', 'Hello World from client');
@@ -64,12 +61,8 @@ thisApp
       console.log(data);
     });
 
-
-
-
-
-
   }
+
 ])
 
 .controller('ClientController', [
@@ -96,13 +89,8 @@ thisApp
     $scope.moduleTypes = ['Environmental', 'Tote', 'Trimmer', 'Plant'];
     $scope.sensorIds = [21, 23];
     $scope.scaleIds = [22];
-    // $scope.currentWeight = 0;
-    // $scope.currentTemp = 0;
-    // $scope.currentHum = 0;
     $scope.showDetails = false;
-
     $rootScope.loading = true;
-
 
     // if ($stateParams.clientExists) {
     HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
@@ -113,11 +101,6 @@ thisApp
       console.log("CONTROLLER MODULES", res);
       $scope.modules = res.data.modules;
     });
-    // }
-
-    // $scope.moduleShow = function(){
-    //   console.log(this);
-    //   $scope.showDetails = !$scope.showDetails;
     // }
 
     $scope.submitModule = function(){
@@ -220,18 +203,62 @@ thisApp
 
     socket.on('weight', function(data) {
       $scope.$apply(function() {
-        $scope.currentWeight = data;
+
+        if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
+
+          for (item in $scope.modules){
+
+            if ($scope.modules[item].module_id == data.moduleId) {
+              console.log("WEIGHT", data);
+              $scope.modules[item].weight_reading = data.weight;
+            }
+
+          }
+
+        }
+
       });
     });
+
     socket.on('humidity', function(data) {
       $scope.$apply(function() {
-        $scope.currentHum = data;
+
+        if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
+
+          for (item in $scope.modules){
+
+            if ($scope.modules[item].module_id == data.moduleId) {
+              console.log("HUM", data);
+              $scope.modules[item].humidity_reading = data.humidity;
+            }
+
+          }
+
+        }
+
       })
     });
+
     socket.on('temperature', function(data) {
-      $scope.$apply(function() {
-        $scope.currentTemp = data;
-      });
+
+      if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
+
+        for (item in $scope.modules){
+
+          if ($scope.modules[item].module_id == data.moduleId) {
+
+            $scope.$apply(function() {
+              console.log("TEMP", data);
+              $scope.modules[item].temperature_reading = data.temperature;
+            })
+
+          }
+
+        }
+
+      }
+
+
     });
 
 
