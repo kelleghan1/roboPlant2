@@ -1,19 +1,19 @@
 var express = require('express');
+var app = express();
+
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+app.set('socketio', io);
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-// var mongo = require('mongodb');
-// var monk = require('monk');
-// var db = monk('localhost:27017/RoboPlantApp');
-
-// var pg = require('pg');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
-var app = express();
 
 
 
@@ -55,5 +55,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+server.listen(4200);
 
 module.exports = app;

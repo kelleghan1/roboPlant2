@@ -52,6 +52,23 @@ thisApp
       })
     };
 
+
+
+
+    var socket = io.connect('http://192.168.0.106:4200');
+    socket.on('connect', function(data) {
+      socket.emit('join', 'Hello World from client');
+    });
+
+    socket.on('messages', function(data) {
+      console.log(data);
+    });
+
+
+
+
+
+
   }
 ])
 
@@ -79,7 +96,9 @@ thisApp
     $scope.moduleTypes = ['Environmental', 'Tote', 'Trimmer', 'Plant'];
     $scope.sensorIds = [21, 23];
     $scope.scaleIds = [22];
-    // console.log($stateParams);
+    // $scope.currentWeight = 0;
+    // $scope.currentTemp = 0;
+    // $scope.currentHum = 0;
     $scope.showDetails = false;
 
     $rootScope.loading = true;
@@ -192,6 +211,29 @@ thisApp
       });
 
     }
+
+
+    var socket = io.connect('http://192.168.0.106:4200');
+    socket.on('connect', function(data) {
+      socket.emit('join', '###########CLIENT CONNECTED');
+    });
+
+    socket.on('weight', function(data) {
+      $scope.$apply(function() {
+        $scope.currentWeight = data;
+      });
+    });
+    socket.on('humidity', function(data) {
+      $scope.$apply(function() {
+        $scope.currentHum = data;
+      })
+    });
+    socket.on('temperature', function(data) {
+      $scope.$apply(function() {
+        $scope.currentTemp = data;
+      });
+    });
+
 
   }
 ])

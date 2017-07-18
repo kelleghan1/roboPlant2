@@ -204,110 +204,6 @@ router.post('/update_module', function(req, res, next) {
 });
 
 
-
-// router.get('/asign_sensor/:data', function(req, res, next) {
-//   var db = req.db;
-//   var collection = db.get('usercollection');
-//   var clientId = req.query.clientId;
-//   var moduleId = req.query.moduleId;
-//   var sensorId = parseInt(req.query.sensorId);
-//
-//
-//   collection.update(
-//     { "modules.sensorId": sensorId },
-//     { $set: {"modules.$.sensorId": ''} }
-//   )
-//
-//   collection.update(
-//     { clientId: clientId, "modules.moduleId": moduleId },
-//     { $set: {"modules.$.sensorId": sensorId} }
-//   )
-//   .then(function(result){
-//     res.redirect('back');
-//   })
-//
-// });
-
-// router.get('/asign_scale/:data', function(req, res, next) {
-//   var db = req.db;
-//   var collection = db.get('usercollection');
-//   var clientId = req.query.clientId;
-//   var moduleId = req.query.moduleId;
-//   var scaleId = parseInt(req.query.scaleId);
-//
-//
-//   collection.update(
-//     { "modules.scaleId": scaleId },
-//     { $set: {"modules.$.scaleId": ''} }
-//   )
-//
-//   collection.update(
-//     { clientId: clientId, "modules.moduleId": moduleId },
-//     { $set: {"modules.$.scaleId": scaleId} }
-//   )
-//   .then(function(result){
-//     res.redirect('back');
-//   })
-//
-// });
-
-
-// router.get('/asign_notes/:data', function(req, res, next) {
-//   var db = req.db;
-//   var collection = db.get('usercollection');
-//   var clientId = req.query.clientId;
-//   var moduleId = req.query.moduleId;
-//   var moduleNotes = req.query.moduleNotes;
-//
-//   collection.update(
-//     { clientId: clientId, "modules.moduleId": moduleId },
-//     { $set: {"modules.$.moduleNotes": moduleNotes} }
-//   )
-//   .then(function(result){
-//     res.redirect('back');
-//   })
-//
-// });
-
-
-// router.post("/post_data/:data", function(req, res){
-//   // var db = req.db;
-//   // var collection = db.get('usercollection');
-//   // var sensorRequest = req.params.data;
-//   // var obj = JSON.parse(sensorRequest);
-//   // var date = new Date();
-//   var date = moment(new Date());
-//
-//   console.log("############DATE", date);
-//
-//   obj.serverParseTime = date;
-//
-//   if (obj.sensorid == 22) {
-//
-//     collection.update(
-//       {"modules.scaleId": obj.sensorid},
-//       { $push:
-//         { "modules.$.scaleReadings": obj }
-//       }
-//     )
-//
-//   } else {
-//
-//     collection.update(
-//       {"modules.sensorId": obj.sensorid},
-//       { $push:
-//         { "modules.$.sensorReadings": obj }
-//       }
-//     )
-//
-//   }
-//
-//
-//   return;
-//
-// });
-
-
 router.post("/post_data/:data", function(req, res){
 
   var sensorRequest = JSON.parse(req.params.data);
@@ -327,10 +223,16 @@ router.post("/post_data/:data", function(req, res){
 
         knex('humidity_readings').insert({module_id: moduleResult[0].module_id, humidity_reading: parseFloat(sensorRequest.hum1), sensor_id: sensorRequest.sensorid, time: date})
         .then(function(res){
-          // console.log("%%%%%RESULT HUM", res);
+
+          var io = req.app.get('socketio');
+          io.emit('humidity', parseFloat(sensorRequest.hum1) + '');
+
           knex('temperature_readings').insert({module_id: moduleResult[0].module_id, temperature_reading: parseFloat(sensorRequest.temp1), sensor_id: sensorRequest.sensorid, time: date})
           .then(function(res1){
-            // console.log("%%%%%RESULT TEMP", res1);
+
+            var io = req.app.get('socketio');
+            io.emit('temperature', parseFloat(sensorRequest.temp1) + '');
+
             return;
           })
         })
@@ -344,14 +246,14 @@ router.post("/post_data/:data", function(req, res){
     knex('modules').where({scale_id: sensorRequest.sensorid})
     .then(function(moduleResult){
 
-      // console.log("##########MOD RESULT", moduleResult);
-
       if (moduleResult.length) {
-
 
         knex('weight_readings').insert({module_id: moduleResult[0].module_id, weight_reading: parseFloat(sensorRequest.weight1), sensor_id: sensorRequest.sensorid, time: date})
         .then(function(res3){
-          // console.log("%%%%%RESULT WEIGHT", res3);
+
+          var io = req.app.get('socketio');
+          io.emit('weight', parseFloat(sensorRequest.weight1) + '');
+
           return;
         })
 

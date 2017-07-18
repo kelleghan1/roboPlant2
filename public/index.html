@@ -23,18 +23,20 @@
   <script src="/node_modules/angular-moment/angular-moment.js"></script>
   <script src='javascripts/controllers/HomeController.js'></script>
   <script src="javascripts/services/HomeService.js"></script>
+  <script src="javascripts/socket.io.js"></script>
+
 
 
 </head>
 
 <body>
 
-<div id="loading" ng-show="loading">
-  <div id="loading-wrap">
-    <img src="images/loading.gif" alt="">
-    <p>LOADING</p>
+  <div id="loading" ng-show="loading">
+    <div id="loading-wrap">
+      <img src="images/loading.gif" alt="">
+      <p>LOADING</p>
+    </div>
   </div>
-</div>
 
 
   <header>
@@ -50,6 +52,18 @@
 
   <ui-view></ui-view>
 
+<!--
+  <script>
+  var socket = io.connect('http://192.168.0.106:4200');
+  socket.on('connect', function(data) {
+    socket.emit('join', 'Hello World from client');
+  });
+
+  socket.on('messages', function(data) {
+    console.log(data);
+  });
+
+  </script> -->
 
 </body>
 
