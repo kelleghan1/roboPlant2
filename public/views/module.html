@@ -23,13 +23,13 @@
       <table>
 
         <tr>
-          <th>ID</th>
+          <th>Sensor ID</th>
           <th>Time</th>
           <th>Temp</th>
         </tr>
 
         <tr ng-repeat="reading in temperatureReadings">
-          <td>{{reading.temperature_reading_id}}</td>
+          <td>{{reading.sensor_id}}</td>
           <td>{{getTime()}}</td>
           <td>{{reading.temperature_reading + " F"}}</td>
         </tr>
@@ -47,13 +47,13 @@
       <table>
 
         <tr>
-          <th>ID</th>
+          <th>Sensor ID</th>
           <th>Time</th>
           <th>Hum</th>
         </tr>
 
         <tr ng-repeat="reading in humidityReadings">
-          <td>{{reading.humidity_reading_id}}</td>
+          <td>{{reading.sensor_id}}</td>
           <td>{{getTime()}}</td>
           <td>{{reading.humidity_reading + " %"}}</td>
         </tr>
@@ -70,13 +70,13 @@
 
       <table>
         <tr>
-          <th>ID</th>
+          <th>Sensor ID</th>
           <th>Time</th>
           <th>Weight</th>
         </tr>
 
         <tr ng-repeat="reading in weightReadings">
-          <td>{{reading.weight_reading_id}}</td>
+          <td>{{reading.sensor_id}}</td>
           <td>{{getTime()}}</td>
           <td>{{reading.weight_reading}}</td>
         </tr>

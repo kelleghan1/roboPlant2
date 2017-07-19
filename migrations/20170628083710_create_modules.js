@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
     table.integer('scale_id');
     table.string('module_name');
     table.string('module_type');
-    table.string('module_notes');
+    table.string('module_notes', 250);
 
   });
 };

@@ -23,17 +23,17 @@
         <div class="module-content">
 
           <p>A module is a subject that will have readings allocated to it. Select a name and a type.</p>
-          <form ng-submit="submitModule()">
+          <form name="createModuleForm" ng-submit="submitModule()">
             <label>Module ID</label>
-            <input type="text" name="moduleName" ng-model="moduleName" required>
+            <input type="text" name="moduleName" ng-model="user.moduleName" required>
             <br>
             <label>Module Type</label>
-            <select id="module-generate-type" name="moduleType" ng-model="moduleType" required>
+            <select id="module-generate-type" name="moduleType" ng-model="user.moduleType" required>
               <option value="">Select</option>
               <option ng-repeat="type in moduleTypes" value="{{type}}">{{type}}</option>
             </select>
             <br>
-            <input type="submit" value="Submit">
+            <input type="submit" value="Submit" >
           </form>
 
         </div>
@@ -63,10 +63,9 @@
 
         <div class="module-content">
 
-          <div class="animation" ng-if="!showDetails">
+          <div class="animation" ng-if="showDetails">
 
             <p class="view-readings" ng-click="viewModule()">View Readings &#10145;</p>
-            <p class="view-readings" ng-click="syncData()">Sync Data &#10145;</p>
 
             <p>Sensor ID: {{::module.sensor_id || ''}}</p>
             <p>Scale ID: {{::module.scale_id || ''}}</p>
@@ -75,7 +74,8 @@
             <p>Most recent temperature: {{module.temperature_reading ? module.temperature_reading + ' F' : ''}}</p>
             <p>Most recent humidity: {{module.humidity_reading ? module.humidity_reading + ' %' : ''}}</p>
 
-            <form ng-submit="updateModule()" name="" class="" method="post">
+            <form ng-submit="updateModule()" name="updateForm" class="" method="post">
+
 
               <div class="module-option">
                 <label for='sensorId'>Assign Sensor</label>
@@ -89,11 +89,13 @@
 
               <div class="">
                 <label for='notes'>Notes</label>
-                <textarea ng-model="module.module_notes" name="" value=""></textarea>
+                <textarea ng-model="module.module_notes" name="notes" value="" rows="3" ng-minlength="0" ng-maxlength="250"></textarea>
+                <span class="warning" ng-show="updateForm.notes.$invalid">Notes cannot contain more than 250 characters</span>
               </div>
 
               <!-- <input ng-model="moduleId" type="hidden"  name="moduleId" ng-value="{{module.moduleId}}"> -->
-              <input type='submit' value='Submit'>
+              <input type='submit' value='Submit' ng-disabled="updateForm.$invalid">
+
 
             </form>
 

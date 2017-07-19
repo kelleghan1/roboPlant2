@@ -34,14 +34,12 @@ router.post("/submit_id", function(req, res){
       knex('clients').returning('client_id').insert({client_name: req.body.data})
       .then(function(insertResult){
 
-        console.log("$$$$$$$$$CLIENT CREATED", insertResult);
         res.send({clientExists: false, clientId: insertResult[0]});
 
       });
 
     } else {
 
-      console.log("$$$$$$$$$CLIENT EXISTS", result);
       res.send({clientExists: true, clientId: result[0].client_id});
 
     }
@@ -176,7 +174,6 @@ router.post('/update_module', function(req, res, next) {
       .update({sensor_id: req.body.sensorId, scale_id: req.body.scaleId, module_notes: req.body.moduleNotes})
       .then(function(moduleResult){
 
-        console.log("$$$$$$$UPDATE COMPLETE", moduleResult);
         res.send(moduleResult);
 
       });

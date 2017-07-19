@@ -91,6 +91,8 @@ thisApp
     $scope.scaleIds = [22];
     $scope.showDetails = false;
     $rootScope.loading = true;
+    $scope.characterCount = false;
+
 
     // if ($stateParams.clientExists) {
     HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
@@ -110,15 +112,12 @@ thisApp
       var createModule = {
         clientId: parseInt($scope.clientId),
         clientName: $scope.clientName,
-        moduleName: this.moduleName,
-        moduleType: this.moduleType
+        moduleName: this.user.moduleName,
+        moduleType: this.user.moduleType
       }
 
       HomeService.submitModule(createModule)
       .then(function(result){
-
-
-        console.log("$$$$$$$CTRLR", result);
 
         if (result.moduleExists) {
 
@@ -140,6 +139,11 @@ thisApp
           $scope.modules = res.data.modules;
         });
 
+        $scope.user = {
+          moduleName: '',
+          moduleType: ''
+        }
+
       });
 
     };
@@ -160,6 +164,8 @@ thisApp
         moduleNotes: this.$parent.module.module_notes
       }
 
+      console.log("this", this);
+
       HomeService.updateModule(updateModule)
       .then(function(result){
 
@@ -174,6 +180,8 @@ thisApp
         });
 
       });
+
+
 
     }
 
@@ -209,7 +217,6 @@ thisApp
           for (item in $scope.modules){
 
             if ($scope.modules[item].module_id == data.moduleId) {
-              console.log("WEIGHT", data);
               $scope.modules[item].weight_reading = data.weight;
             }
 
@@ -228,7 +235,6 @@ thisApp
           for (item in $scope.modules){
 
             if ($scope.modules[item].module_id == data.moduleId) {
-              console.log("HUM", data);
               $scope.modules[item].humidity_reading = data.humidity;
             }
 
@@ -248,7 +254,6 @@ thisApp
           if ($scope.modules[item].module_id == data.moduleId) {
 
             $scope.$apply(function() {
-              console.log("TEMP", data);
               $scope.modules[item].temperature_reading = data.temperature;
             })
 
