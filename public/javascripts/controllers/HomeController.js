@@ -148,7 +148,6 @@ thisApp
 
     };
 
-
     $scope.updateModule = function(){
 
       $rootScope.loading = true;
@@ -181,8 +180,6 @@ thisApp
 
       });
 
-
-
     }
 
     $scope.viewModule = function(){
@@ -202,7 +199,6 @@ thisApp
       });
 
     }
-
 
     var socket = io.connect('http://192.168.0.106:4200');
     socket.on('connect', function(data) {
@@ -263,7 +259,6 @@ thisApp
 
       }
 
-
     });
 
 
@@ -299,18 +294,14 @@ thisApp
 
     $rootScope.loading = true;
 
-
     HomeService.getModule($scope.clientId, $scope.moduleId)
     .then(function(res){
-
-      console.log("GET MODULE CTRL", res.data);
 
       $scope.humidityReadings = res.data.humidityReadings;
       $scope.temperatureReadings = res.data.temperatureReadings;
       $scope.weightReadings = res.data.weightReadings;
 
       $rootScope.loading = false;
-
 
     });
 
