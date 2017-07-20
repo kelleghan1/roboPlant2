@@ -94,6 +94,10 @@ section{
   width: 100%;
 }
 
+.home-content{
+  padding: 10px 15px;
+}
+
 .section-header{
   background-color: #73A742;
   color: #fff;
