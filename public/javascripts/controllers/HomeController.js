@@ -94,16 +94,14 @@ thisApp
     $scope.characterCount = false;
 
 
-    // if ($stateParams.clientExists) {
     HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
     .then(function(res){
 
       $rootScope.loading = false;
-
       console.log("CONTROLLER MODULES", res);
       $scope.modules = res.data.modules;
+
     });
-    // }
 
     $scope.submitModule = function(){
 
@@ -261,7 +259,6 @@ thisApp
 
     });
 
-
   }
 ])
 
@@ -291,6 +288,7 @@ thisApp
     $scope.humidityReadings = null;
     $scope.temperatureReadings = null;
     $scope.weightReadings = null;
+    $scope.compReadings = [];
 
     $rootScope.loading = true;
 
@@ -303,7 +301,36 @@ thisApp
 
       $rootScope.loading = false;
 
+      (function(){
+
+        for (var i = 0; i < $scope.temperatureReadings.length; i++) {
+
+          var readingObj = {};
+
+          readingObj.time = moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm');
+          readingObj.temp = $scope.temperatureReadings[i].temperature_reading;
+
+          for (var ii = 0; ii < $scope.humidityReadings.length; ii++) {
+            if ( moment($scope.humidityReadings[ii].time).format('MM/DD/YY, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm') ) {
+              readingObj.hum = $scope.humidityReadings[ii].humidity_reading;
+            }
+          }
+
+          for (var iii = 0; iii < $scope.weightReadings.length; iii++) {
+            if ( moment($scope.weightReadings[iii].time).format('MM/DD/YY, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm') ) {
+              readingObj.weight = $scope.weightReadings[iii].weight_reading;
+            }
+          }
+
+          $scope.compReadings.push(readingObj);
+
+
+        }
+
+      })();
+
     });
+
 
     $scope.getTime = function(){
 

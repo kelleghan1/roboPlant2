@@ -13,6 +13,33 @@
 <section>
   <div class="container">
 
+    <div class="content-wrap" id="combReadings">
+
+
+      <div class="section-header">
+        <p>Combination Readings</p>
+      </div>
+
+      <table>
+
+        <tr>
+          <th>Time</th>
+          <th>Temp</th>
+          <th>Hum</th>
+          <th>Weight</th>
+        </tr>
+
+        <tr ng-repeat="reading in compReadings">
+          <td>{{reading.time}}</td>
+          <td>{{reading.temp + " F"}}</td>
+          <td>{{reading.hum + " %"}}</td>
+          <td>{{reading.weight}}</td>
+        </tr>
+
+      </table>
+
+    </div>
+
     <div class="content-wrap" id="tempReadings">
 
 

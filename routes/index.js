@@ -108,17 +108,17 @@ router.post("/get_module", function(req, res){
 
   var moduleObj = {};
 
-  knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(200)
+  knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(100)
   .then(function(temperatureResult){
 
     moduleObj.temperatureReadings = temperatureResult;
 
-    knex('humidity_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(200)
+    knex('humidity_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(100)
     .then(function(humidityResult){
 
       moduleObj.humidityReadings = humidityResult;
 
-      knex('weight_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(200)
+      knex('weight_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(100)
       .then(function(weightResult){
 
         moduleObj.weightReadings = weightResult;
