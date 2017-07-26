@@ -30,7 +30,7 @@ thisApp
         if (result.data.clientExists) {
 
           prompt({
-            title: 'Access client: ' + $scope.clientName + '?',
+            title: 'Access Client: ' + $scope.clientName + '?',
             message: 'Are you sure you want to access ' + $scope.clientName + '?'
           }).then(function(){
             //he hit ok and not cancel
@@ -40,7 +40,7 @@ thisApp
         }else{
 
           prompt({
-            title: 'Create client: ' + $scope.clientName + '?',
+            title: 'Create Client: ' + $scope.clientName + '?',
             message: 'Are you sure you want to create a new client ' + $scope.clientName + '?'
           }).then(function(){
             //he hit ok and not cancel
@@ -143,35 +143,41 @@ thisApp
 
     };
 
-    // $scope.deleteModule = function(){
-    //
-    //   console.log("THIS", this);
-    //
-    //   $rootScope.loading = true;
-    //
-    //   var deleteObj = {
-    //     moduleId: this.$parent.module.module_id,
-    //     clientId: this.$parent.module.client_id,
-    //     scaleId: this.$parent.module.scale_id,
-    //     sensorId: this.$parent.module.sensor_id
-    //   };
-    //
-    //   prompt({
-    //     title: 'Delete Module: ' + this.$parent.module.module_name + '?',
-    //     message: 'Are you sure you want to delete ' + this.$parent.module.module_name + '?'
-    //   }).then(function(){
-    //     //he hit ok and not cancel
-    //
-    //     console.log("CTRL", deleteObj);
-    //
-    //     HomeService.deleteModule(deleteObj)
-    //     .then(function(res){
-    //       $rootScope.loading = false;
-    //     });
-    //
-    //   });
-    //
-    // };
+    $scope.deleteModule = function(){
+
+      console.log("THIS", this);
+
+      $rootScope.loading = true;
+
+      var deleteObj = {
+        moduleId: this.$parent.module.module_id,
+        clientId: this.$parent.module.client_id,
+        scaleId: this.$parent.module.scale_id,
+        sensorId: this.$parent.module.sensor_id
+      };
+
+      prompt({
+        title: 'Delete Module: ' + this.$parent.module.module_name + '?',
+        message: 'Are you sure you want to delete ' + this.$parent.module.module_name + '?'
+      }).then(function(){
+        //he hit ok and not cancel
+
+        console.log("CTRL DEL", deleteObj);
+
+        HomeService.deleteModule(deleteObj)
+        .then(function(res){
+
+          HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
+          .then(function(res){
+            $scope.modules = res.data.modules;
+            $rootScope.loading = false;
+          });
+
+        });
+
+      });
+
+    };
 
     $scope.updateModule = function(){
 
@@ -227,7 +233,10 @@ thisApp
     });
 
     socket.on('weight', function(data) {
+
       $scope.$apply(function() {
+
+        console.log("SOCKET DATA", data);
 
         if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
 

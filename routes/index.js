@@ -188,7 +188,13 @@ router.post('/update_module', function(req, res, next) {
 
 router.post('/delete_module', function(req, res, next) {
 
-  console.log("@@@@@@@@@@@@@@", req.body.data );
+  knex('modules').where({module_id: req.body.moduleId}).del()
+  .then(function(deleteRes){
+
+    console.log("$$$$$$$$$$$$DELETE RES", deleteRes);
+    res.send({deleted: deleteRes});
+
+  })
 
 });
 
@@ -228,6 +234,8 @@ router.post("/post_data/:data", function(req, res){
     });
 
   } else if (sensorRequest.weight1) {
+
+    console.log("%%%%%%%%%%%WEIGHT", sensorRequest.weight1);
 
     knex('modules').where({scale_id: sensorRequest.sensorid})
     .then(function(moduleResult){
