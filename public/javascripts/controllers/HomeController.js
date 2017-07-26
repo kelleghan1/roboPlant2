@@ -27,7 +27,6 @@ thisApp
 
         $rootScope.loading = false;
 
-        console.log();
         if (result.data.clientExists) {
 
           prompt({
@@ -121,19 +120,17 @@ thisApp
 
           prompt({
             title: 'Error',
-            message: 'Module of the same name already exists'
+            message: 'Module of the same name already exists',
+            buttons: [{ label:'OK', primary: true }]
           }).then(function(){
             $state.go('client', {clientName: $scope.clientName, clientId: $scope.clientId});
           });
-
 
         }
 
         HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
         .then(function(res){
-
           $rootScope.loading = false;
-
           $scope.modules = res.data.modules;
         });
 
@@ -146,12 +143,39 @@ thisApp
 
     };
 
+    // $scope.deleteModule = function(){
+    //
+    //   console.log("THIS", this);
+    //
+    //   $rootScope.loading = true;
+    //
+    //   var deleteObj = {
+    //     moduleId: this.$parent.module.module_id,
+    //     clientId: this.$parent.module.client_id,
+    //     scaleId: this.$parent.module.scale_id,
+    //     sensorId: this.$parent.module.sensor_id
+    //   };
+    //
+    //   prompt({
+    //     title: 'Delete Module: ' + this.$parent.module.module_name + '?',
+    //     message: 'Are you sure you want to delete ' + this.$parent.module.module_name + '?'
+    //   }).then(function(){
+    //     //he hit ok and not cancel
+    //
+    //     console.log("CTRL", deleteObj);
+    //
+    //     HomeService.deleteModule(deleteObj)
+    //     .then(function(res){
+    //       $rootScope.loading = false;
+    //     });
+    //
+    //   });
+    //
+    // };
+
     $scope.updateModule = function(){
 
       $rootScope.loading = true;
-
-
-      console.log("THIS", this);
 
       var updateModule = {
         clientId: parseInt($scope.clientId),
@@ -172,7 +196,6 @@ thisApp
           $scope.modules = res.data.modules;
 
           $rootScope.loading = false;
-
 
         });
 
@@ -330,6 +353,10 @@ thisApp
       })();
 
     });
+
+    $scope.returnClient = function(){
+      $state.go('client', {clientName: $scope.clientName, clientId: $scope.clientId});
+    }
 
 
     $scope.getTime = function(){

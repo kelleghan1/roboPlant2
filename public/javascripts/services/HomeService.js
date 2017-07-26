@@ -30,6 +30,19 @@ thisApp
     },
 
 
+    // deleteModule: function(moduleData){
+    //   return $http.post('/delete_module', moduleData)
+    //   .then(function(success){
+    //     console.log("DELETE MOD SUCCESS", success);
+    //     return success.data;
+    //   },
+    //   function(error){
+    //     console.log("DELETE MOD ERROR", error);
+    //     return error;
+    //   });
+    // },
+    //
+
     getClient: function(clientId){
       return $http.post('/get_client', {data: clientId})
       .then(function(success){

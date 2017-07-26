@@ -3,8 +3,17 @@
 <section>
   <div class="container" id="module_info">
     <div class="client-header">
-      <p>Client: {{clientName}}</p>
-      <p>Module: {{moduleName}}</p>
+      <div id="return-button" ng-click="returnClient()">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i> Return To Client {{clientName}}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container" id="module_info">
+    <div class="client-header">
+      <p><i class="fa fa-leaf" aria-hidden="true"></i> Module: {{moduleName}}</p>
     </div>
   </div>
 </section>

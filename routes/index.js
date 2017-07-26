@@ -185,6 +185,14 @@ router.post('/update_module', function(req, res, next) {
 });
 
 
+
+router.post('/delete_module', function(req, res, next) {
+
+  console.log("@@@@@@@@@@@@@@", req.body.data );
+
+});
+
+
 router.post("/post_data/:data", function(req, res){
 
   var sensorRequest = JSON.parse(req.params.data);

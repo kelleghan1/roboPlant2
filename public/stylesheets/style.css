@@ -124,6 +124,11 @@ section{
   border-top-right-radius: 5px;
 }
 
+#return-button{
+  display: inline;
+  cursor: pointer;
+}
+
 .client-header{
   background-color: #73A742;
   border-radius: 5px;
@@ -131,13 +136,6 @@ section{
   margin-bottom: 10px;
   color: #fff;
 
-}
-.module-wrap{
-  /*padding: 0 15px;*/
-  background-color: #fff;
-  border-radius: 5px;
-  /*border-top: 1px solid black;*/
-  clear: both;
 }
 
 .module-header{
@@ -158,14 +156,15 @@ section{
 }
 
 .module-inner{
-  padding: 15px;
+  padding: 0 15px 15px 15px;
 
 }
 
 .module-wrap{
+  background-color: #fff;
   overflow: hidden;
-  /*margin-bottom: 10px;*/
   padding: 0 15px;
+  clear: both;
 }
 
 .module-wrap textarea{
@@ -189,13 +188,17 @@ section{
   color: #fff;
 }
 
-.view-readings{
+.view-readings, .delete-module{
   background-color: #73A742;
   padding: 10px 15px;
   border-radius: 5px;
   display: inline-block;
   color: #fff;
   cursor: pointer;
+}
+
+.delete-module{
+  float: right;
 }
 
 /* The starting CSS styles for the enter animation */
