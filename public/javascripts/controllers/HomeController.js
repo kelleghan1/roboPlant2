@@ -234,44 +234,51 @@ thisApp
 
     socket.on('weight', function(data) {
 
-      $scope.$apply(function() {
+      // console.log("SOCKET WEIGHT", data);
 
-        console.log("SOCKET DATA", data);
+      if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
 
-        if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
+        for (item in $scope.modules){
 
-          for (item in $scope.modules){
+          if ($scope.modules[item].module_id == data.moduleId) {
 
-            if ($scope.modules[item].module_id == data.moduleId) {
+            $scope.$apply(function() {
               $scope.modules[item].weight_reading = data.weight;
-            }
+            });
 
           }
 
         }
 
-      });
+      }
+
     });
 
     socket.on('humidity', function(data) {
-      $scope.$apply(function() {
 
-        if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
+      // console.log("SOCKET HUMIDITY", data);
 
-          for (item in $scope.modules){
+      if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
 
-            if ($scope.modules[item].module_id == data.moduleId) {
+        for (item in $scope.modules){
+
+          if ($scope.modules[item].module_id == data.moduleId) {
+
+            $scope.$apply(function() {
               $scope.modules[item].humidity_reading = data.humidity;
-            }
+            });
 
           }
 
         }
 
-      })
+      }
+
     });
 
     socket.on('temperature', function(data) {
+
+      // console.log("SOCKET TEMPERATURE", data);
 
       if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
 
@@ -281,7 +288,7 @@ thisApp
 
             $scope.$apply(function() {
               $scope.modules[item].temperature_reading = data.temperature;
-            })
+            });
 
           }
 
@@ -377,5 +384,4 @@ thisApp
     }
 
   }
-
 ])

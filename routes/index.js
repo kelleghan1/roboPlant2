@@ -108,20 +108,21 @@ router.post("/get_module", function(req, res){
 
   var moduleObj = {};
 
-  knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(100)
+  knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(100)
   .then(function(temperatureResult){
 
     moduleObj.temperatureReadings = temperatureResult;
 
-    knex('humidity_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(100)
+    knex('humidity_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(100)
     .then(function(humidityResult){
 
       moduleObj.humidityReadings = humidityResult;
 
-      knex('weight_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(100)
+      knex('weight_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(100)
       .then(function(weightResult){
 
         moduleObj.weightReadings = weightResult;
+        console.log(moduleObj);
         res.send(moduleObj);
 
       });
@@ -204,6 +205,8 @@ router.post("/post_data/:data", function(req, res){
   var sensorRequest = JSON.parse(req.params.data);
   var date = moment(new Date());
 
+  console.log("#######TIME", date);
+
   if (sensorRequest.hum1) {
 
     knex('modules').where({sensor_id: sensorRequest.sensorid})
@@ -233,9 +236,9 @@ router.post("/post_data/:data", function(req, res){
 
     });
 
-  } else if (sensorRequest.weight1) {
+  } else if (sensorRequest.hasOwnProperty('weight1')) {
 
-    console.log("%%%%%%%%%%%WEIGHT", sensorRequest.weight1);
+    // console.log("%%%%%%%%%%%WEIGHT", sensorRequest.weight1);
 
     knex('modules').where({scale_id: sensorRequest.sensorid})
     .then(function(moduleResult){
