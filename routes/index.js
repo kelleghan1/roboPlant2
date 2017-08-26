@@ -60,7 +60,7 @@ router.post("/get_client", function(req, res){
   knex('modules').where({client_id: req.body.data.clientId})
   .then(function(modulesResult){
 
-    var updateModuleLoop = function(i){
+    var updateModuleArr = function(i){
 
       if (i <= modulesResult.length - 1) {
 
@@ -97,7 +97,7 @@ router.post("/get_client", function(req, res){
 
     };
 
-    updateModuleLoop(0);
+    updateModuleArr(0);
 
   });
 
@@ -198,6 +198,22 @@ router.post('/delete_module', function(req, res, next) {
   })
 
 });
+
+
+router.post('/create_worker', function(req, res, next) {
+
+  console.log('##############', req.body.data);
+
+  var clientId = req.body.data.clientId;
+  var workerName = req.body.data.workerName;
+
+  knex('workers').insert({client_id: clientId, worker_name: workerName})
+  .then(function(insertResult){
+    res.send(insertResult);
+  })
+
+});
+
 
 
 router.post("/post_data/:data", function(req, res){

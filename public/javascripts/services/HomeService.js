@@ -30,6 +30,19 @@ thisApp
     },
 
 
+    submitWorker: function(workerData){
+      return $http.post('/create_worker', {data: workerData})
+      .then(function(success){
+        console.log("SUBMIT WORKER SUCCESS", success);
+        return success.data;
+      },
+      function(error){
+        console.log("SUBMIT WORKER ERROR", error);
+        return error;
+      });
+    },
+
+
     deleteModule: function(moduleData){
       return $http.post('/delete_module', moduleData)
       .then(function(success){
@@ -83,14 +96,6 @@ thisApp
 
 
   }
-
-
-
-
-
-
-
-
 
 
 

@@ -143,6 +143,32 @@ thisApp
 
     };
 
+    $scope.submitWorker = function(){
+
+      $rootScope.loading = true;
+
+      var createWorker = {
+        clientId: parseInt($scope.clientId),
+        workerName: this.worker.workerName,
+      }
+
+      HomeService.submitWorker(createWorker)
+      .then(function(result){
+
+        HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
+        .then(function(res){
+          $rootScope.loading = false;
+          $scope.modules = res.data.modules;
+        });
+
+        $scope.worker = {
+          workerName: '',
+        }
+
+      });
+
+    };
+
     $scope.deleteModule = function(){
 
       console.log("THIS", this);
@@ -256,8 +282,6 @@ thisApp
 
     socket.on('humidity', function(data) {
 
-      // console.log("SOCKET HUMIDITY", data);
-
       if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
 
         for (item in $scope.modules){
@@ -277,8 +301,6 @@ thisApp
     });
 
     socket.on('temperature', function(data) {
-
-      // console.log("SOCKET TEMPERATURE", data);
 
       if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
 
@@ -362,7 +384,6 @@ thisApp
           }
 
           $scope.compReadings.push(readingObj);
-
 
         }
 

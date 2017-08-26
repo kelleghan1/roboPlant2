@@ -15,6 +15,37 @@
     <div class="form-wrap">
 
       <div class="section-header">
+        <p><i class="fa fa-plus" aria-hidden="true"></i> Create Worker</p>
+      </div>
+
+      <div class="module-wrap">
+
+        <div class="create-module-content">
+
+          <p>Add workers to the client</p>
+          <form name="createClientForm" ng-submit="submitWorker()">
+            <label>Worker Name</label>
+            <input type="text" name="workerName" ng-model="worker.workerName" required>
+            <input type="submit" value="Submit" >
+          </form>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+
+    <div class="form-wrap">
+
+      <div class="section-header">
         <p><i class="fa fa-plus" aria-hidden="true"></i> Create Module</p>
       </div>
 
