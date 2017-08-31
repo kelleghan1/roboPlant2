@@ -392,13 +392,13 @@ thisApp
           readingObj.temp = $scope.temperatureReadings[i].temperature_reading;
 
           for (var ii = 0; ii < $scope.humidityReadings.length; ii++) {
-            if ( moment($scope.humidityReadings[ii].time).format('MM/DD, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm') ) {
+            if ( moment($scope.humidityReadings[ii].time).format('MM/DD, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD, h:mm') ) {
               readingObj.hum = $scope.humidityReadings[ii].humidity_reading;
             }
           }
 
           for (var iii = 0; iii < $scope.weightReadings.length; iii++) {
-            if ( moment($scope.weightReadings[iii].time).format('MM/DD, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm') ) {
+            if ( moment($scope.weightReadings[iii].time).format('MM/DD, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD, h:mm') ) {
               readingObj.weight = $scope.weightReadings[iii].weight_reading;
             }
           }
@@ -406,7 +406,6 @@ thisApp
           $scope.compReadings.push(readingObj);
 
         }
-
 
         for(temp in $scope.temperatureReadings){
           $scope.tempLabels.push(moment($scope.temperatureReadings[temp].time).format('MM/DD, h:mm'));
@@ -498,16 +497,11 @@ thisApp
 
       })();
 
-
-
     });
-
-
 
     $scope.returnClient = function(){
       $state.go('client', {clientName: $scope.clientName, clientId: $scope.clientId});
     }
-
 
     $scope.getTime = function(){
 
