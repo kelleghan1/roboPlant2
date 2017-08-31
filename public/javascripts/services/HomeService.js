@@ -43,6 +43,19 @@ thisApp
     },
 
 
+    updateWorker: function(workerData){
+      return $http.post('/update_worker', {data: workerData})
+      .then(function(success){
+        console.log("UPDATE WORKER SUCCESS", success);
+        return success.data;
+      },
+      function(error){
+        console.log("UPDATE WORKER ERROR", error);
+        return error;
+      });
+    },
+
+
     deleteModule: function(moduleData){
       return $http.post('/delete_module', moduleData)
       .then(function(success){

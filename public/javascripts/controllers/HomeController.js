@@ -91,6 +91,7 @@ thisApp
     $scope.showDetails = false;
     $rootScope.loading = true;
     $scope.characterCount = false;
+    $scope.workers = [];
 
 
     HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
@@ -99,6 +100,7 @@ thisApp
       $rootScope.loading = false;
       console.log("CONTROLLER MODULES", res);
       $scope.modules = res.data.modules;
+      $scope.workers = res.data.workers;
 
     });
 
@@ -149,7 +151,7 @@ thisApp
 
       var createWorker = {
         clientId: parseInt($scope.clientId),
-        workerName: this.worker.workerName,
+        workerName: this.workerField.workerName,
       }
 
       HomeService.submitWorker(createWorker)
@@ -159,15 +161,30 @@ thisApp
         .then(function(res){
           $rootScope.loading = false;
           $scope.modules = res.data.modules;
+          $scope.workers = res.data.workers;
         });
 
-        $scope.worker = {
+        $scope.workerField = {
           workerName: '',
         }
 
       });
 
     };
+
+    $scope.updateWorker = function(){
+      HomeService.updateWorker({"worker_id": this.worker.worker_id, "active": this.worker.active})
+      .then(function(res){
+
+        HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
+        .then(function(res){
+          $rootScope.loading = false;
+          $scope.modules = res.data.modules;
+          $scope.workers = res.data.workers;
+        });
+
+      })
+    }
 
     $scope.deleteModule = function(){
 
@@ -217,8 +234,6 @@ thisApp
         moduleNotes: this.$parent.module.module_notes
       }
 
-      console.log("this", this);
-
       HomeService.updateModule(updateModule)
       .then(function(result){
 
@@ -236,7 +251,6 @@ thisApp
     }
 
     $scope.viewModule = function(){
-      console.log("this", this);
       $state.go('module', {clientName: $scope.clientName, moduleName: this.$parent.module.module_name, clientId: $scope.clientId, moduleId: this.$parent.module.module_id , moduleObj: this.$parent.module});
     }
 
@@ -347,8 +361,14 @@ thisApp
     $scope.moduleId = $stateParams.moduleId;
     $scope.moduleObj = $stateParams.moduleObj;
     $scope.humidityReadings = null;
+    $scope.humData = [];
+    $scope.humLabels = [];
     $scope.temperatureReadings = null;
+    $scope.tempData = [];
+    $scope.tempLabels = [];
     $scope.weightReadings = null;
+    $scope.weightData = [];
+    $scope.weightLabels = [];
     $scope.compReadings = [];
 
     $rootScope.loading = true;
@@ -368,17 +388,17 @@ thisApp
 
           var readingObj = {};
 
-          readingObj.time = moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm');
+          readingObj.time = moment($scope.temperatureReadings[i].time).format('MM/DD, h:mm');
           readingObj.temp = $scope.temperatureReadings[i].temperature_reading;
 
           for (var ii = 0; ii < $scope.humidityReadings.length; ii++) {
-            if ( moment($scope.humidityReadings[ii].time).format('MM/DD/YY, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm') ) {
+            if ( moment($scope.humidityReadings[ii].time).format('MM/DD, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm') ) {
               readingObj.hum = $scope.humidityReadings[ii].humidity_reading;
             }
           }
 
           for (var iii = 0; iii < $scope.weightReadings.length; iii++) {
-            if ( moment($scope.weightReadings[iii].time).format('MM/DD/YY, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm') ) {
+            if ( moment($scope.weightReadings[iii].time).format('MM/DD, h:mm') == moment($scope.temperatureReadings[i].time).format('MM/DD/YY, h:mm') ) {
               readingObj.weight = $scope.weightReadings[iii].weight_reading;
             }
           }
@@ -387,9 +407,102 @@ thisApp
 
         }
 
+
+        for(temp in $scope.temperatureReadings){
+          $scope.tempLabels.push(moment($scope.temperatureReadings[temp].time).format('MM/DD, h:mm'));
+          $scope.tempData.push($scope.temperatureReadings[temp].temperature_reading);
+        }
+
+        for(hum in $scope.humidityReadings){
+          $scope.humLabels.push(moment($scope.humidityReadings[hum].time).format('MM/DD, h:mm'));
+          $scope.humData.push($scope.humidityReadings[hum].humidity_reading);
+        }
+
+        for(weight in $scope.weightReadings){
+          $scope.weightLabels.push(moment($scope.weightReadings[weight].time).format('MM/DD, h:mm'));
+          $scope.weightData.push($scope.weightReadings[weight].weight_reading);
+        }
+
+
+        var tempCtx = document.getElementById("tempChart");
+        var tempChart = new Chart(tempCtx, {
+          type: 'line',
+          data: {
+            labels: $scope.tempLabels,
+            datasets: [{
+              label: 'Temperature',
+              data: $scope.tempData,
+              backgroundColor: 'rgba(115, 167, 66, 0.2)',
+              borderColor: 'rgba(115, 167, 66, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero:false
+                }
+              }]
+            }
+          }
+        });
+
+        var humCtx = document.getElementById("humChart");
+        var humChart = new Chart(humCtx, {
+          type: 'line',
+          data: {
+            labels: $scope.humLabels,
+            datasets: [{
+              label: 'Humidity',
+              data: $scope.humData,
+              backgroundColor: 'rgba(115, 167, 66, 0.2)',
+              borderColor: 'rgba(115, 167, 66, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero:false
+                }
+              }]
+            }
+          }
+        });
+
+        var weightCtx = document.getElementById("weightChart");
+        var weightChart = new Chart(weightCtx, {
+          type: 'line',
+          data: {
+            labels: $scope.weightLabels,
+            datasets: [{
+              label: 'Weight',
+              data: $scope.weightData,
+              backgroundColor: 'rgba(115, 167, 66, 0.2)',
+              borderColor: 'rgba(115, 167, 66, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: false
+                }
+              }]
+            }
+          }
+        });
+
       })();
 
+
+
     });
+
+
 
     $scope.returnClient = function(){
       $state.go('client', {clientName: $scope.clientName, clientId: $scope.clientId});
@@ -399,7 +512,7 @@ thisApp
     $scope.getTime = function(){
 
       if (this.reading.time) {
-        return moment(this.reading.time).format('MM/DD/YY, h:mm');
+        return moment(this.reading.time).format('MM/DD, h:mm');
       }
 
     }

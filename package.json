@@ -7,8 +7,10 @@
   },
   "dependencies": {
     "angular": "^1.6.4",
+    "angular-chart.js": "^1.1.1",
     "angular-momentjs": "^0.2.2",
     "body-parser": "~1.15.2",
+    "chart.js": "^2.6.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
     "ejs": "~1.0.0",

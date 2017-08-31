@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
     table.increments('worker_id');
     table.integer('client_id').notNullable().references('client_id').inTable('clients').onDelete('cascade').onUpdate('cascade');
     table.string('worker_name');
+    table.boolean('active').defaultTo(0);
 
   });
 };

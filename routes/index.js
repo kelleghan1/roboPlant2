@@ -21,6 +21,8 @@ var knex = require('knex')({
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index');
+  // next(err);
+  // response.sendfile('index.html');
 });
 
 
@@ -54,50 +56,58 @@ router.post("/get_client", function(req, res){
   var clientObj = {
     clientId: req.body.data.clientId,
     clientName: req.body.data.clientName,
+    workers: [],
     modules: []
   };
 
   knex('modules').where({client_id: req.body.data.clientId})
   .then(function(modulesResult){
 
-    var updateModuleArr = function(i){
+    knex('workers').where({client_id: req.body.data.clientId})
+    .then(function(workersResult){
 
-      if (i <= modulesResult.length - 1) {
+      clientObj.workers = workersResult;
 
-        knex('temperature_readings').where({module_id: modulesResult[i].module_id}).orderBy('time', 'desc').first()
-        .then(function(tempResult){
+      var updateModuleArr = function(i){
 
-          modulesResult[i].temperature_reading = tempResult != undefined ? tempResult.temperature_reading : null;
+        if (i <= modulesResult.length - 1) {
 
-          knex('humidity_readings').where({module_id: modulesResult[i].module_id}).orderBy('time', 'desc').first()
-          .then(function(humidityResult){
+          knex('temperature_readings').where({module_id: modulesResult[i].module_id}).orderBy('time', 'desc').first()
+          .then(function(tempResult){
 
-            modulesResult[i].humidity_reading = humidityResult != undefined ? humidityResult.humidity_reading : null;
+            modulesResult[i].temperature_reading = tempResult != undefined ? tempResult.temperature_reading : null;
 
-            knex('weight_readings').where({module_id: modulesResult[i].module_id}).orderBy('time', 'desc').first()
-            .then(function(weightResult){
+            knex('humidity_readings').where({module_id: modulesResult[i].module_id}).orderBy('time', 'desc').first()
+            .then(function(humidityResult){
 
-              modulesResult[i].weight_reading = weightResult != undefined ? weightResult.weight_reading : null;
+              modulesResult[i].humidity_reading = humidityResult != undefined ? humidityResult.humidity_reading : null;
 
-              clientObj.modules.push(modulesResult[i]);
-              updateModuleLoop(i + 1);
+              knex('weight_readings').where({module_id: modulesResult[i].module_id}).orderBy('time', 'desc').first()
+              .then(function(weightResult){
+
+                modulesResult[i].weight_reading = weightResult != undefined ? weightResult.weight_reading : null;
+
+                clientObj.modules.push(modulesResult[i]);
+                updateModuleArr(i + 1);
+
+              });
 
             });
 
-          });
+          })
 
-        })
+        } else {
 
-      } else {
+          res.send(clientObj);
+          return;
 
-        res.send(clientObj);
-        return;
+        }
 
-      }
+      };
 
-    };
+      updateModuleArr(0);
 
-    updateModuleArr(0);
+    });
 
   });
 
@@ -108,21 +118,20 @@ router.post("/get_module", function(req, res){
 
   var moduleObj = {};
 
-  knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(100)
+  knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(150)
   .then(function(temperatureResult){
 
     moduleObj.temperatureReadings = temperatureResult;
 
-    knex('humidity_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(100)
+    knex('humidity_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(150)
     .then(function(humidityResult){
 
       moduleObj.humidityReadings = humidityResult;
 
-      knex('weight_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(100)
+      knex('weight_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(150)
       .then(function(weightResult){
 
         moduleObj.weightReadings = weightResult;
-        console.log(moduleObj);
         res.send(moduleObj);
 
       });
@@ -215,6 +224,23 @@ router.post('/create_worker', function(req, res, next) {
 });
 
 
+router.post('/update_worker', function(req, res, next) {
+
+  console.log('##############', req.body.data);
+
+  var workerId = req.body.data.worker_id;
+  var workerActive = req.body.data.active;
+
+  knex('workers').where({'worker_id': workerId})
+  .update({'active': workerActive})
+  .then(function(updateResult){
+    console.log("%%%%%%%%%%UPDATE RESULT", updateResult);
+    res.send({"updateResult": updateResult});
+  })
+
+});
+
+
 
 router.post("/post_data/:data", function(req, res){
 
@@ -253,8 +279,6 @@ router.post("/post_data/:data", function(req, res){
     });
 
   } else if (sensorRequest.hasOwnProperty('weight1')) {
-
-    // console.log("%%%%%%%%%%%WEIGHT", sensorRequest.weight1);
 
     knex('modules').where({scale_id: sensorRequest.sensorid})
     .then(function(moduleResult){

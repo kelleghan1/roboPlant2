@@ -5,7 +5,8 @@ var thisApp = angular.module('Roboplant', [
   'ngAnimate',
   'ngTouch',
   'ui.bootstrap',
-  'cgPrompt'
+  'cgPrompt',
+  'chart.js'
   // 'accordion'
 ])
 

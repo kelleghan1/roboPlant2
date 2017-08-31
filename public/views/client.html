@@ -25,9 +25,14 @@
           <p>Add workers to the client</p>
           <form name="createClientForm" ng-submit="submitWorker()">
             <label>Worker Name</label>
-            <input type="text" name="workerName" ng-model="worker.workerName" required>
+            <input type="text" name="workerName" ng-model="workerField.workerName" required>
             <input type="submit" value="Submit" >
           </form>
+
+          <div ng-repeat="worker in workers | orderBy:'worker_name'" class="worker-wrap">
+            <input type="checkbox" ng-change="updateWorker()" ng-model="worker.active" name={{worker.worker_id}} value="{{worker.worker_id}}">
+            <label for="{{worker.worker_id}}">{{worker.worker_name}}</label>
+          </div>
 
         </div>
 

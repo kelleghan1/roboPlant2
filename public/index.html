@@ -20,6 +20,8 @@
   <script src="/node_modules/moment/moment.js"></script>
   <script src="/node_modules/angular-moment/angular-moment.js"></script>
   <script src='javascripts/controllers/HomeController.js'></script>
+  <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+  <script src="node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
   <script src="javascripts/services/HomeService.js"></script>
   <script src="javascripts/socket.io.js"></script>
   <link rel="stylesheet" href="stylesheets/font-awesome.min.css">
@@ -49,7 +51,7 @@
   </header>
 
 
-  <ui-view></ui-view>
+  <ui-view data-ng-animate="1"></ui-view>
 
 
 
