@@ -20,10 +20,22 @@ thisApp
 
     $rootScope.loading = false;
 
+    $scope.clientList = [];
+
+    HomeService.getClientList()
+    .then(function(clientList){
+
+      console.log("Client List", clientList);
+      $scope.clientList = clientList.data;
+
+    });
+
+
     $scope.submitClient = function(){
       $rootScope.loading = true;
 
-      HomeService.submitClient($scope.clientName).then(function(result){
+      HomeService.submitClient($scope.clientName)
+      .then(function(result){
 
         $rootScope.loading = false;
 
@@ -92,7 +104,6 @@ thisApp
     $rootScope.loading = true;
     $scope.characterCount = false;
     $scope.workers = [];
-
 
     HomeService.getClient({clientId: $scope.clientId, clientName: $scope.clientName})
     .then(function(res){
@@ -188,8 +199,6 @@ thisApp
 
     $scope.deleteModule = function(){
 
-      console.log("THIS", this);
-
       $rootScope.loading = true;
 
       var deleteObj = {
@@ -203,9 +212,6 @@ thisApp
         title: 'Delete Module: ' + this.$parent.module.module_name + '?',
         message: 'Are you sure you want to delete ' + this.$parent.module.module_name + '?'
       }).then(function(){
-        //he hit ok and not cancel
-
-        console.log("CTRL DEL", deleteObj);
 
         HomeService.deleteModule(deleteObj)
         .then(function(res){
@@ -273,8 +279,6 @@ thisApp
     });
 
     socket.on('weight', function(data) {
-
-      // console.log("SOCKET WEIGHT", data);
 
       if (data.clientId == $scope.clientId && $scope.modules.length > 0) {
 

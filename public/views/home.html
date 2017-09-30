@@ -16,6 +16,24 @@
         </form>
 
       </div>
+    </div>
+    
+
+    <div class="content-wrap">
+
+
+      <div class="home-content">
+
+        <h3>Select Client</h3>
+        <p>Click on a client to view modules.</p>
+
+
+
+        <div ng-repeat="client in clientList">
+          <a ui-sref="client({clientId: client.client_id, clientName: client.client_name})" href="#">{{client.client_name}}</a>
+        </div>
+
+      </div>
 
 
     </div>

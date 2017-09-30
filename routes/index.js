@@ -25,6 +25,17 @@ router.get('/', function(req, res, next) {
   // response.sendfile('index.html');
 });
 
+router.get("/get_client_list", function(req, res){
+
+  knex('clients')
+  .then(function(clientList){
+    console.log('$$$$$$$$$$$$$$', clientList);
+    res.send(clientList);
+
+  })
+
+})
+
 
 router.post("/submit_id", function(req, res){
 
@@ -118,20 +129,20 @@ router.post("/get_module", function(req, res){
 
   var moduleObj = {};
 
-  knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(150)
+  knex('temperature_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(150)
   .then(function(temperatureResult){
 
-    moduleObj.temperatureReadings = temperatureResult;
+    moduleObj.temperatureReadings = temperatureResult.reverse();
 
-    knex('humidity_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(150)
+    knex('humidity_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(150)
     .then(function(humidityResult){
 
-      moduleObj.humidityReadings = humidityResult;
+      moduleObj.humidityReadings = humidityResult.reverse();
 
-      knex('weight_readings').where({module_id: req.body.moduleId}).orderBy('time', 'asc').limit(150)
+      knex('weight_readings').where({module_id: req.body.moduleId}).orderBy('time', 'desc').limit(150)
       .then(function(weightResult){
 
-        moduleObj.weightReadings = weightResult;
+        moduleObj.weightReadings = weightResult.reverse();
         res.send(moduleObj);
 
       });

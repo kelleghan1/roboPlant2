@@ -3,6 +3,20 @@ thisApp
 
   return {
 
+    getClientList: function(){
+      return $http.get('/get_client_list')
+      .then(
+        function(success){
+          console.log('CLIENT LIST SUCCESS', success);
+          return success;
+        },
+        function(error){
+          console.log('CLIENT LIST ERROR', error);
+          return error;
+        }
+      );
+    },
+
     submitClient: function(clientId){
       return $http.post('/submit_id', {data: clientId})
       .then(
